@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>스터디존 관리자 (Timelapse Ready)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Typography & Base Reset */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard", sans-serif;
+            background-color: #2b2b2b;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 40px 0; 
+            margin: 0;
+        }
+        .app-container {
+            width: 402px;
+            height: 874px;
+            background-color: #E5E7EB;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+            border-radius: 40px;
+            overflow: hidden;
+            border: 12px solid #1a1a1a;
+            flex-shrink: 0; 
+        }
+
+        .bottom-nav-item {
+            color: #9CA3AF;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            font-size: 10px;
+            height: 100%;
+            width: 25%;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+        .bottom-nav-item.active {
+            color: #007BFF;
+            font-weight: 600;
+        }
+        
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* ==========================================================================
+        [🎥 UI 타임랩스 촬영용 컨트롤러]
+        
+        * 촬영 가이드:
+          1. 이 파일을 브라우저에서 열고 화면 녹화를 시작하세요.
+          2. 아래 [Step 1]부터 [Step 7]까지 순서대로 주석( / * ... * / )을 해제하세요.
+             (단축키: 드래그 후 Ctrl + / 또는 Cmd + /)
+          3. 디자인이 완성 -> 뼈대로 파괴되는 과정이 녹화됩니다.
+          4. 편집 툴에서 영상을 '역재생(Reverse)'하면 뼈대 -> 완성 타임랩스가 됩니다.
+        ==========================================================================
+        */
+
+        /* [Step 1: 뼈대] - 레이아웃 파괴, Grid/Flex 해제, 단순 나열 */
+        /*
+        body * {
+            display: block !important;
+            position: static !important;
+            grid-template-columns: none !important;
+            flex: none !important;
+            width: auto !important;
+            height: auto !important;
+            margin: 5px !important;
+            padding: 5px !important;
+            border: 1px dashed #ccc !important;
+            background: none !important;
+            transform: none !important;
+            left: auto !important;
+            top: auto !important;
+            right: auto !important;
+            bottom: auto !important;
+        }
+        */
+
+        /* [Step 2: 배치/레이아웃] - 와이어프레임화, 컨테이너 베젤/그림자 제거 */
+        /*
+        * {
+            border-radius: 0 !important;
+            box-shadow: none !important;
+            border: 1px solid #e5e5e5 !important;
+            background-color: #fff !important;
+        }
+        .app-container {
+            border: 1px solid #000 !important;
+            box-shadow: none !important;
+        }
+        .grid {
+            display: block !important; 
+        }
+        */
+
+        /* [Step 3: 타이포그래피] - 폰트 통일, 계층 구조 제거 */
+        /*
+        body, div, p, h1, h2, h3, span, a, button {
+            font-family: 'Courier New', monospace !important;
+            font-weight: 400 !important;
+            font-size: 14px !important;
+            letter-spacing: normal !important;
+            line-height: 1.5 !important;
+            text-align: left !important;
+        }
+        */
+
+        /* [Step 4: 색상 제거] - 흑백 모드 강제, Tailwind/브랜드 색상 무력화 */
+        /*
+        * {
+            color: #000 !important;
+            background-color: #ffffff !important;
+            background-image: none !important;
+            border-color: #000 !important;
+        }
+        .text-[#007BFF], .bg-red-500, .bg-red-400 { 
+            color: #000 !important;
+            background-color: #fff !important;
+        }
+        .bg-[#E5E5E5], .bg-[#E5E7EB] {
+            background-color: #fff !important;
+        }
+        */
+
+        /* [Step 5: 형태/깊이감 제거] - 평면 디자인화 */
+        /*
+        * {
+            border-radius: 0 !important;
+            box-shadow: none !important;
+            filter: none !important;
+            backdrop-filter: none !important;
+        }
+        */
+
+        /* [Step 6: 아이콘/에셋 숨김] - 아이콘, 배지, SVG 화살표 제거 */
+        /*
+        i, svg, .fa-solid, .fa-regular, .animate-ping, span.absolute {
+            visibility: hidden !important;
+            width: 0 !important;
+            height: 0 !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            border: none !important;
+        }
+        */
+
+        /* [Step 7: 인터랙션/애니메이션 제거] - 정적 상태 고정 */
+        /*
+        * {
+            transition: none !important;
+            animation: none !important;
+            transform: none !important;
+            cursor: default !important;
+        }
+        *:hover, *:active, *:focus {
+            background-color: transparent !important;
+            color: inherit !important;
+            box-shadow: none !important;
+            transform: none !important;
+        }
+        */
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        
+        <div class="bg-white px-8 pt-4 pb-2 flex justify-between items-end rounded-t-[25px] z-20">
+            <div class="font-semibold text-black text-[15px] tracking-wide ml-1">9:41</div>
+            <div class="flex items-center gap-2 text-black mr-1">
+                <i class="fa-solid fa-signal text-[12px]"></i>
+                <i class="fa-solid fa-wifi text-[12px]"></i>
+                <i class="fa-solid fa-battery-full text-[18px]"></i>
+            </div>
+        </div>
+
+        <header class="h-[60px] px-6 flex items-center justify-between bg-white z-20 relative">
+            <h1 class="text-2xl font-bold text-[#007BFF]">스터디존 - 관리자</h1>
+            <div class="flex items-center gap-4">
+                <button class="text-gray-500 relative">
+                    <i class="fa-solid fa-bullhorn text-xl"></i>
+                    <span class="absolute -top-1 -right-1 flex h-3 w-3">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-3 w-3 bg-red-500 text-[8px] text-white justify-center items-center">!</span>
+                    </span>
+                </button>
+                <button class="text-gray-500">
+                    <i class="fa-solid fa-user text-xl"></i>
+                </button>
+            </div>
+        </header>
+
+        <div class="bg-white pb-0 px-4 flex justify-between items-center text-sm font-medium text-gray-500 border-b border-gray-200 rounded-b-2xl shadow-sm z-10 sticky top-0">
+            <button class="flex-1 py-3 text-center text-gray-800 border-b-[3px] border-transparent hover:text-[#007BFF]">김수환관</button>
+            <button class="flex-1 py-3 text-center border-b-[3px] border-transparent hover:text-[#007BFF]">인커라</button>
+            <button class="flex-1 py-3 text-center border-b-[3px] border-transparent hover:text-[#007BFF]">스타트업</button>
+        </div>
+
+        <main class="flex-1 overflow-y-auto bg-[#E5E5E5] p-6 flex flex-col justify-center no-scrollbar">
+            
+            <div class="grid grid-cols-2 gap-5">
+                <button class="bg-white rounded-[35px] aspect-square flex flex-col items-center justify-center shadow-sm relative group active:scale-95 transition-transform duration-200 pb-5">
+                    <div class="w-16 h-16 rounded-full border-4 border-gray-400 flex items-center justify-center mb-4 text-gray-500">
+                        <i class="fa-regular fa-calendar text-3xl"></i>
+                    </div>
+                    <span class="text-gray-600 font-medium text-lg">좌석 관리</span>
+                    
+                    <svg class="absolute bottom-4 right-4 w-6 h-6 text-black" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round">
+                        <path d="M 8 20 Q 18 20 20 10" />
+                    </svg>
+                </button>
+
+                <button class="bg-white rounded-[35px] aspect-square flex flex-col items-center justify-center shadow-sm relative group active:scale-95 transition-transform duration-200 pb-5">
+                    <div class="w-16 h-16 rounded-full border-4 border-gray-400 flex items-center justify-center mb-4 text-gray-500">
+                        <i class="fa-regular fa-clock text-3xl"></i>
+                    </div>
+                    <span class="text-gray-600 font-medium text-lg">이용 기록 관리</span>
+                     <svg class="absolute bottom-4 right-4 w-6 h-6 text-black" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round">
+                        <path d="M 8 20 Q 18 20 20 10" />
+                    </svg>
+                </button>
+
+                <button class="bg-white rounded-[35px] aspect-square flex flex-col items-center justify-center shadow-sm relative group active:scale-95 transition-transform duration-200 pb-5">
+                    <div class="w-16 h-16 rounded-full border-4 border-gray-400 flex items-center justify-center mb-4 text-gray-500">
+                        <i class="fa-solid fa-circle-exclamation text-3xl"></i>
+                    </div>
+                    <span class="text-gray-600 font-medium text-lg">신고 관리</span>
+                     <svg class="absolute bottom-4 right-4 w-6 h-6 text-black" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round">
+                        <path d="M 8 20 Q 18 20 20 10" />
+                    </svg>
+                </button>
+
+                <button class="bg-white rounded-[35px] aspect-square flex flex-col items-center justify-center shadow-sm relative group active:scale-95 transition-transform duration-200 pb-5">
+                    <div class="w-16 h-16 rounded-full border-4 border-gray-400 flex items-center justify-center mb-4 text-gray-500">
+                        <i class="fa-solid fa-bullhorn text-3xl"></i>
+                    </div>
+                    <span class="text-gray-600 font-medium text-lg">공지사항 관리</span>
+                     <svg class="absolute bottom-4 right-4 w-6 h-6 text-black" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round">
+                        <path d="M 8 20 Q 18 20 20 10" />
+                    </svg>
+                </button>
+            </div>
+
+        </main>
+
+        <nav class="h-[90px] border-t border-gray-100 flex justify-between items-center px-4 bg-white pb-5 rounded-b-[25px]">
+            <button class="bottom-nav-item active">
+                <i class="fa-solid fa-house text-xl"></i>
+                <span>홈</span>
+            </button>
+            <button class="bottom-nav-item">
+                <i class="fa-regular fa-calendar-check text-xl"></i>
+                <span>좌석 관리</span>
+            </button>
+            <button class="bottom-nav-item">
+                <i class="fa-solid fa-bullhorn text-xl"></i>
+                <span>공지사항 관리</span>
+            </button>
+            <button class="bottom-nav-item">
+                <i class="fa-solid fa-circle-exclamation text-xl"></i>
+                <span>신고 관리</span>
+            </button>
+        </nav>
+    </div>
+</body>
+</html>
