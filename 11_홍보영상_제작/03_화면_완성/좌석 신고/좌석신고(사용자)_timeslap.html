@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <title>스터디존 - 좌석 신고</title>
+
+    <style>
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo",
+          "Pretendard", sans-serif;
+        background: #2b2b2b;
+        height: 100vh;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .app-container {
+        width: 402px;
+        height: 874px;
+        background: var(--bg);
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+        border-radius: 30px;
+        overflow: hidden;
+        position: relative; /* ★ 기준 요소 지정 */
+      }
+
+      .input-ghost,
+      .textarea-ghost {
+        background: transparent;
+        border: 1px solid #eee;
+        border-radius: 14px;
+        padding: 12px 14px;
+        color: var(--text-main);
+      }
+
+      .textarea-ghost {
+        min-height: 140px;
+        resize: none;
+      }
+
+      .modal-bg {
+        position: absolute;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.4);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        backdrop-filter: blur(2px);
+        z-index: 50;
+      }
+
+      .modal {
+        width: 90%;
+        max-width: 320px;
+        background: #fff;
+        border-radius: 20px;
+        padding: 25px;
+        text-align: center;
+        animation: fadeUp 0.25s ease;
+      }
+
+      @keyframes fadeUp {
+        from {
+          transform: translateY(10px);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+
+      #sideMenuBg {
+        position: absolute;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.4);
+        backdrop-filter: blur(2px);
+        z-index: 40;
+      }
+
+      #sideMenu {
+        position: absolute;
+        right: 0;
+        top: 0;
+        height: 100%;
+        width: 64%;
+        max-width: 260px;
+        background: white;
+        box-shadow: -4px 0 20px rgba(0, 0, 0, 0.15);
+        transform: translateX(100%);
+        transition: transform 0.3s ease;
+        z-index: 45;
+      }
+
+      /* ================================================================
+         [📷 타임랩스 제어용 CSS 블록]
+           Step 1부터 적용 후 하나씩 주석처리하여 '완성 과정'을 연출하세요.
+         * 모든 속성은 !important로 원본 디자인을 덮어씁니다.
+         ================================================================
+      */
+
+      /* [Step 1: 뼈대 (HTML 구조만 남김)] - Flex/Grid를 해제하고 요소를 세로로 단순 나열합니다. */
+      /*
+      body * {
+          display: block !important;
+          position: static !important;
+          float: none !important;
+          grid: none !important;
+          flex: none !important;
+          border: 1px solid #ccc !important;
+      }
+     
+      body {
+          display: block !important;
+          background: #fff !important;
+          padding: 20px !important;
+          height: auto !important;
+      }
+      */
+
+      /* [Step 2: 배치/레이아웃 단순화] - 패딩/마진을 단순화하고 와이어프레임처럼 만듭니다. */
+      /*
+      body * {
+          margin: 0 !important;
+          padding: 5px !important;
+          width: auto !important;
+          height: auto !important;
+          min-height: auto !important;
+          max-width: none !important;
+      }
+      */
+
+      /* [Step 3: 타이포그래피] - 폰트를 기본체로, 크기와 굵기를 통일시킵니다. */
+      /*
+      body * {
+          font-family: 'Courier New', monospace !important;
+          font-weight: 400 !important;
+          font-size: 14px !important;
+          line-height: 1.5 !important;
+          letter-spacing: normal !important;
+          text-align: left !important;
+      }
+      */
+
+      /* [Step 4: 색상 제거] - 모든 요소를 흑백(White/Black/Gray)으로 강제하고 Tailwind 색상을 무력화합니다. */
+      /*
+      body * {
+          background-color: #ffffff !important;
+          background-image: none !important;
+          color: #000000 !important;
+          border-color: #000000 !important;
+      }
+      button, input, textarea, [class*="bg-"] {
+          background: #fff !important;
+      }
+      */
+
+      /* [Step 5: 형태/깊이감 제거] - 둥근 모서리, 그림자, 흐림 효과를 제거하여 평면으로 만듭니다. */
+      /*
+      body * {
+          border-radius: 0 !important;
+          box-shadow: none !important;
+          filter: none !important;
+          backdrop-filter: none !important;
+          border-style: solid !important;
+      }
+      */
+
+      /* [Step 6: 아이콘/에셋 숨김] - 아이콘, 이미지 등 장식 요소를 숨깁니다. */
+      /*
+      i, svg, img, .fa-solid, .fa-regular, .dot {
+          visibility: hidden !important;
+          width: 0 !important;
+          height: 0 !important;
+          overflow: hidden !important;
+          position: absolute !important;
+      }
+      */
+
+      /* [Step 7: 인터랙션/애니메이션 제거] - 움직임을 멈추고 hover 효과를 없앱니다. */
+      /*
+      body *, body *::before, body *::after {
+          transition: none !important;
+          animation: none !important;
+          transform: none !important;
+          cursor: default !important;
+          pointer-events: none !important;
+      }
+      */
+    </style>
+  </head>
+
+  <body>
+    <div class="app-container">
+      <header
+        class="h-[74px] px-4 flex items-center justify-between bg-white border-b border-gray-100"
+      >
+        <h1 class="text-lg font-bold text-[#007BFF]">스터디존</h1>
+
+        <div class="flex items-center gap-4">
+          <button class="text-gray-500">
+            <i class="fa-regular fa-bell text-[22px]"></i>
+          </button>
+          <button class="text-gray-500" id="openMenuBtn">
+            <i class="fa-solid fa-bars text-[22px]"></i>
+          </button>
+        </div>
+      </header>
+
+      <div id="sideMenuBg" class="hidden"></div>
+
+      <div id="sideMenu" class="translate-x-full">
+        <div class="p-5 border-b border-gray-100">
+          <div class="flex items-center gap-3">
+            <div
+              class="w-12 h-12 rounded-full bg-blue-100 text-blue-500 flex items-center justify-center text-xl font-bold"
+            >
+              김
+            </div>
+
+            <div>
+              <p class="font-semibold text-gray-800">김가동 님</p>
+              <p class="text-xs text-gray-500">스터디존 이용자</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-5 flex flex-col gap-4">
+          <button class="text-left text-gray-700 font-medium">
+            📌 최신 신고하기
+          </button>
+          <button class="text-left text-gray-700 font-medium">
+            📄 신고 목록
+          </button>
+        </div>
+
+        <button
+          id="closeSideMenu"
+          class="absolute bottom-0 left-0 w-full py-4 bg-gray-100 text-gray-700 font-semibold"
+        >
+          닫기
+        </button>
+      </div>
+
+      <main
+        id="reportWritePage"
+        class="flex-1 overflow-y-auto bg-[#F8F9FA] p-5"
+      >
+        <form id="reportForm" novalidate>
+          <h2 class="text-lg font-semibold text-[#333] mb-3">좌석 신고</h2>
+
+          <div
+            class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 mb-4"
+          >
+            <label
+              for="seatNumber"
+              class="block text-sm font-medium text-[#333] mb-2"
+            >
+              좌석 번호
+            </label>
+
+            <input
+              id="seatNumber"
+              name="seatNumber"
+              required
+              aria-required="true"
+              aria-describedby="seatHelp"
+              type="text"
+              placeholder="예: A3, B4"
+              class="w-full input-ghost placeholder:text-gray-300 focus:outline-none"
+            />
+
+            <p id="seatHelp" class="text-xs text-gray-400 mt-2">
+              위반 좌석 번호를 정확히 입력해주세요.
+            </p>
+          </div>
+
+          <div
+            class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 mb-6"
+          >
+            <label
+              for="details"
+              class="block text-sm font-medium text-[#333] mb-2"
+            >
+              위반 내용
+            </label>
+
+            <textarea
+              id="details"
+              name="details"
+              required
+              aria-required="true"
+              aria-describedby="detailHelp"
+              placeholder="위반 내용을 상세히 적어주세요.
+(예: 장시간 자리 비움, 지속적 소음 등)"
+              class="w-full textarea-ghost placeholder:text-gray-300 focus:outline-none"
+            ></textarea>
+
+            <p id="detailHelp" class="text-xs text-gray-400 mt-2">
+              가능한 자세히 작성해주세요.
+            </p>
+          </div>
+
+          <button
+            type="submit"
+            class="w-full py-4 rounded-2xl text-white font-semibold text-base"
+            style="
+              background: linear-gradient(180deg, #ff4b3b 0%, #ff3b30 100%);
+              box-shadow: 0 6px 18px rgba(255, 59, 48, 0.25);
+            "
+          >
+            신고 접수하기
+          </button>
+        </form>
+      </main>
+
+      <main
+        id="reportListPage"
+        class="flex-1 overflow-y-auto bg-[#F8F9FA] p-5 hidden"
+      >
+        <h2 class="text-lg font-semibold text-[#333] mb-3">신고 내역</h2>
+
+        <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
+          <p class="text-[10px] text-gray-400 mb-1">2025. 11. 22.</p>
+
+          <p class="text-sm font-bold text-gray-800">좌석 A1</p>
+          <p class="text-xs text-[#007BFF] font-semibold mt-1 inline-block">
+            접수완료
+          </p>
+
+          <div class="mt-2 text-xs text-gray-500 bg-gray-50 p-3 rounded-xl">
+            15분 이상 자리 비움
+          </div>
+        </div>
+      </main>
+
+      <nav
+        class="h-[74px] bg-white border-t border-gray-200 flex justify-between items-center px-6 shadow-md"
+        style="position: absolute; bottom: 0; left: 0; width: 100%"
+      >
+        <button class="flex flex-col items-center text-gray-400">
+          <i class="fa-solid fa-house text-[22px]"></i>
+          <span class="text-[11px] mt-1">홈</span>
+        </button>
+
+        <button class="flex flex-col items-center text-gray-400">
+          <i class="fa-regular fa-calendar text-[22px]"></i>
+          <span class="text-[11px] mt-1">예약</span>
+        </button>
+
+        <button class="flex flex-col items-center text-gray-400">
+          <i class="fa-regular fa-clock text-[22px]"></i>
+          <span class="text-[11px] mt-1">관리</span>
+        </button>
+
+        <button class="flex flex-col items-center text-gray-400">
+          <i class="fa-solid fa-users text-[22px]"></i>
+          <span class="text-[11px] mt-1">친구</span>
+        </button>
+
+        <button class="flex flex-col items-center text-[#007BFF] font-semibold">
+          <i class="fa-solid fa-circle-exclamation text-[22px]"></i>
+          <span class="text-[11px] mt-1">신고</span>
+        </button>
+      </nav>
+
+      <div id="modalWrap" class="modal-bg hidden">
+        <div class="modal">
+          <div
+            class="w-14 h-14 rounded-full bg-green-100 flex items-center justify-center mb-3 mx-auto"
+          >
+            <i class="fa-solid fa-check text-green-500 text-2xl"></i>
+          </div>
+
+          <p class="text-lg font-bold mb-1">신고 접수 완료</p>
+          <p class="text-sm text-gray-500 mb-5">
+            관리자가 확인 후 처리할 예정입니다.
+          </p>
+
+          <button
+            id="closeModal"
+            class="px-6 py-2 rounded-xl bg-[#007BFF] text-white font-semibold w-full"
+          >
+            확인
+          </button>
+        </div>
+      </div>
+
+      <div id="errorModalWrap" class="modal-bg hidden">
+        <div class="modal">
+          <div
+            class="w-14 h-14 rounded-full bg-red-100 flex items-center justify-center mb-3 mx-auto"
+          >
+            <i class="fa-solid fa-exclamation text-red-500 text-2xl"></i>
+          </div>
+
+          <p class="text-lg font-bold mb-1">입력 오류</p>
+          <p class="text-sm text-gray-500 mb-5 leading-relaxed">
+            좌석 번호와 위반 내용을<br />모두 입력해주세요.
+          </p>
+
+          <button
+            id="closeErrorModal"
+            class="px-6 py-2 rounded-xl bg-gray-200 text-gray-700 font-semibold w-full"
+          >
+            닫기
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      /* FORM */
+      const form = document.getElementById("reportForm");
+      const successModal = document.getElementById("modalWrap");
+      const errorModal = document.getElementById("errorModalWrap");
+
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        const seat = form.seatNumber.value.trim();
+        const detail = form.details.value.trim();
+
+        if (!seat || !detail) {
+          errorModal.classList.remove("hidden");
+          return;
+        }
+
+        successModal.classList.remove("hidden");
+
+        form.reset();
+      });
+
+      document.getElementById("closeModal").onclick = () =>
+        successModal.classList.add("hidden");
+
+      document.getElementById("closeErrorModal").onclick = () =>
+        errorModal.classList.add("hidden");
+
+      /* SIDE MENU */
+      const sideMenu = document.getElementById("sideMenu");
+      const sideMenuBg = document.getElementById("sideMenuBg");
+
+      document.getElementById("openMenuBtn").onclick = () => {
+        sideMenu.style.transform = "translateX(0)";
+        sideMenuBg.classList.remove("hidden");
+      };
+
+      document.getElementById("closeSideMenu").onclick = closeMenu;
+      sideMenuBg.onclick = closeMenu;
+
+      function closeMenu() {
+        sideMenu.style.transform = "translateX(100%)";
+        sideMenuBg.classList.add("hidden");
+      }
+
+      /* 신고 목록 버튼 클릭하면 화면 전환 */
+      document.querySelectorAll("button").forEach((btn) => {
+        if (btn.innerText.includes("신고 목록")) {
+          btn.addEventListener("click", () => {
+            closeMenu(); // 사이드메뉴 닫기
+
+            document.getElementById("reportWritePage").classList.add("hidden");
+            document
+              .getElementById("reportListPage")
+              .classList.remove("hidden");
+          });
+        }
+
+        if (btn.innerText.includes("최신 신고하기")) {
+          btn.addEventListener("click", () => {
+            closeMenu(); // 사이드메뉴 닫기
+
+            document.getElementById("reportListPage").classList.add("hidden");
+            document
+              .getElementById("reportWritePage")
+              .classList.remove("hidden");
+          });
+        }
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>스터디존 - 메인 (Timelapse Ready)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Typography & Base Reset */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard", sans-serif;
+            background-color: #2b2b2b;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 40px 0;
+            margin: 0;
+        }
+
+        /* Mobile Container Frame */
+        .app-container {
+            width: 402px;
+            height: 874px;
+            background-color: #E5E5E5; /* 메인 배경 회색 */
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+            border-radius: 40px;
+            overflow: hidden;
+            border: 12px solid #1a1a1a;
+            flex-shrink: 0;
+        }
+
+        /* Bottom Navigation Item Style */
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            color: #999999;
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
+        .nav-item.active { color: #007BFF; }
+        .nav-text { font-size: 10px; font-weight: 500; }
+
+        /* ==========================================================================
+        [🎥 UI 타임랩스 촬영용 컨트롤러]
+        
+        * 촬영 가이드:
+          1. 이 파일을 브라우저에서 열고 화면 녹화를 시작하세요.
+          2. 아래 [Step 1]부터 [Step 7]까지 순서대로 주석( / * ... * / )을 해제하세요.
+             (단축키: 드래그 후 Ctrl + / 또는 Cmd + /)
+          3. 디자인이 완성 -> 뼈대로 파괴되는 과정이 녹화됩니다.
+          4. 편집 툴에서 영상을 '역재생(Reverse)'하면 뼈대 -> 완성 타임랩스가 됩니다.
+        ==========================================================================
+        */
+
+        /* [Step 1: 뼈대] - 레이아웃 파괴, 요소 단순 나열 */
+        /*
+        body * {
+            display: block !important;
+            position: static !important;
+            grid-template-columns: none !important;
+            flex: none !important;
+            width: auto !important;
+            height: auto !important;
+            margin: 5px !important;
+            padding: 5px !important;
+            border: 1px dashed #ccc !important;
+            background: none !important;
+            transform: none !important;
+            text-align: left !important;
+        }
+        */
+
+        /* [Step 2: 배치/레이아웃] - 와이어프레임화, 컨테이너 베젤/그림자 제거 */
+        /*
+        * {
+            border-radius: 0 !important;
+            box-shadow: none !important;
+            border: 1px solid #e5e5e5 !important;
+            background-color: #fff !important;
+        }
+        .app-container {
+            border: 1px solid #000 !important;
+            box-shadow: none !important;
+        }
+        */
+
+        /* [Step 3: 타이포그래피] - 폰트 통일, 계층 구조 제거 */
+        /*
+        body, div, p, h1, h2, h3, h4, span, a, button {
+            font-family: 'Courier New', monospace !important;
+            font-weight: 400 !important;
+            font-size: 14px !important;
+            letter-spacing: normal !important;
+            line-height: 1.5 !important;
+        }
+        */
+
+        /* [Step 4: 색상 제거] - 흑백 모드 강제, 브랜드 컬러 제거 */
+        /*
+        * {
+            color: #000 !important;
+            background-color: #ffffff !important;
+            background-image: none !important;
+            border-color: #000 !important;
+        }
+        .text-[#007BFF], .text-blue-500 { color: #000 !important; }
+        .bg-[#E5E5E5] { background-color: #fff !important; }
+        */
+
+        /* [Step 5: 형태/깊이감 제거] - 카드 그림자, 둥근 모서리 완전 제거 */
+        /*
+        * {
+            border-radius: 0 !important;
+            box-shadow: none !important;
+            filter: none !important;
+        }
+        */
+
+        /* [Step 6: 아이콘/에셋 숨김] - 마스코트 이미지, 아이콘 제거 */
+        /*
+        img, i, svg, .fa-solid, .fa-regular, span.absolute {
+            visibility: hidden !important;
+            width: 0 !important;
+            height: 0 !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            border: none !important;
+            opacity: 0 !important;
+        }
+        */
+
+        /* [Step 7: 인터랙션/애니메이션 제거] - 정적 상태 고정 */
+
+        * {
+            transition: none !important;
+            animation: none !important;
+            transform: none !important;
+            cursor: default !important;
+        }
+        *:hover, *:active, *:focus {
+            background-color: transparent !important;
+            color: inherit !important;
+            box-shadow: none !important;
+            transform: none !important;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        
+        <div class="h-[47px] w-full bg-white z-20 shrink-0 flex justify-between items-end px-6 pb-2">
+            <div class="font-semibold text-black text-[15px] tracking-wide ml-1">9:41</div>
+            <div class="flex items-center gap-2 text-black mr-1">
+                <i class="fa-solid fa-signal text-[12px]"></i>
+                <i class="fa-solid fa-wifi text-[12px]"></i>
+                <i class="fa-solid fa-battery-full text-[18px]"></i>
+            </div>
+        </div>
+
+        <header class="h-[60px] px-6 flex items-center justify-between bg-white z-10 shrink-0">
+            <h1 class="text-[26px] font-bold text-[#007BFF] tracking-tight">스터디존</h1>
+            <div class="flex items-center gap-5 text-[#545454]">
+                <button class="relative">
+                    <i class="fa-solid fa-bullhorn text-[22px] text-gray-400"></i>
+                    <span class="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-red-500 rounded-full border border-white"></span>
+                </button>
+                <button><i class="fa-solid fa-user text-[22px] text-gray-500"></i></button>
+            </div>
+        </header>
+
+        <div class="bg-white h-[45px] px-0 flex justify-between items-center text-[13px] font-medium text-gray-500 shrink-0 shadow-sm z-10">
+            <button class="flex-1 h-full text-center border-b-[2px] border-transparent hover:text-[#007BFF] transition-colors">김수환관</button>
+            <button class="flex-1 h-full text-center border-b-[2px] border-transparent hover:text-[#007BFF] transition-colors">인커라</button>
+            <button class="flex-1 h-full text-center border-b-[2px] border-transparent hover:text-[#007BFF] transition-colors">스타트업</button>
+        </div>
+
+        <main class="flex-1 flex flex-col items-center justify-center p-6 pb-12 overflow-hidden">
+            
+            <div class="bg-white w-[300px] h-[340px] rounded-[35px] shadow-lg flex flex-col items-center justify-center p-6 text-center animate-fade-in-up">
+                
+                <div class="mb-6">
+                    <img src="../media/hi.png" alt="마스코트 캐릭터" class="w-[140px] h-[140px] object-contain drop-shadow-sm">
+                </div>
+
+                <div class="space-y-2">
+                    <h2 class="text-[#007BFF] font-bold text-[15px] tracking-tight">
+                        이용할 공간을 선택해주세요.
+                    </h2>
+                    <p class="text-[#007BFF] text-[12px] leading-relaxed opacity-90">
+                        김수환관 / 인커라 / 스타트업 중<br>선택할 수 있어요.
+                    </p>
+                </div>
+
+                <div class="absolute bottom-6 right-6 w-8 h-8 border-r-4 border-b-4 border-black rounded-br-2xl opacity-10"></div>
+            </div>
+
+        </main>
+
+        <nav class="h-[83px] bg-white border-t border-gray-100 grid grid-cols-5 px-1 pt-2 pb-5 shrink-0 z-20 rounded-b-[30px]">
+            <button class="nav-item active">
+                <i class="fa-solid fa-house text-[24px] mb-1"></i>
+                <span class="nav-text">홈</span>
+            </button>
+            <button class="nav-item">
+                <i class="fa-regular fa-calendar-check text-[24px] mb-1"></i>
+                <span class="nav-text">좌석 예약</span>
+            </button>
+            <button class="nav-item">
+                <i class="fa-regular fa-clock text-[24px] mb-1"></i>
+                <span class="nav-text">이용 관리</span>
+            </button>
+            <button class="nav-item">
+                <i class="fa-solid fa-user-group text-[24px] mb-1"></i>
+                <span class="nav-text">친구</span>
+            </button>
+            <button class="nav-item">
+                <i class="fa-solid fa-circle-exclamation text-[24px] mb-1"></i>
+                <span class="nav-text">신고</span>
+            </button>
+        </nav>
+
+        <div class="absolute bottom-2 w-full flex justify-center pb-1 z-30 pointer-events-none">
+            <div class="w-[134px] h-[5px] bg-black rounded-full"></div>
+        </div>
+
+    </div>
+
+</body>
+</html>

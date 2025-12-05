@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>스터디존 관리자 - 공지 상세</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard", sans-serif;
+            background-color: #2b2b2b; height: 100vh; display: flex; align-items: center; justify-content: center; margin: 0;
+        }
+        .app-container {
+            width: 402px; height: 874px; background-color: #F8F9FA; display: flex; flex-direction: column;
+            position: relative; box-shadow: 0 0 50px rgba(0,0,0,0.5); border-radius: 30px; overflow: hidden;
+        }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .bottom-nav-item {
+            color: #545454; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            gap: 6px; font-size: 11px; height: 100%; width: 25%; cursor: pointer;
+        }
+        .bottom-nav-item.active { color: #007BFF; font-weight: 600; }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <header class="h-[60px] px-5 flex items-center justify-between bg-white border-b border-gray-100 shrink-0">
+            <h1 class="text-lg font-bold text-[#007BFF]">스터디존 - 관리자</h1>
+            <div class="flex items-center gap-4">
+                <button class="text-gray-500"><i class="fa-regular fa-bell text-xl"></i></button>
+                <button class="text-gray-500"><i class="fa-solid fa-bars text-xl"></i></button>
+            </div>
+        </header>
+
+        <div class="h-[50px] px-4 flex items-center gap-3 bg-[#F8F9FA] shrink-0">
+            <button class="text-gray-600"><i class="fa-solid fa-arrow-left text-lg"></i></button>
+        </div>
+
+        <main class="flex-1 flex flex-col p-5 bg-[#F8F9FA] overflow-y-auto no-scrollbar">
+            <div class="mb-6">
+                <div class="flex justify-between items-end mb-2">
+                    <h2 class="text-xl font-bold text-[#333] leading-tight flex-1 mr-4">[공지] 시스템 점검 안내</h2>
+                    <span class="text-[11px] text-gray-500 whitespace-nowrap">작성자: 홍길동</span>
+                </div>
+            </div>
+
+            <div class="flex-1 text-[14px] text-[#333] leading-7 whitespace-pre-line">본문내용문본문내용문본문내용문본문내용문본문내용문본문내용문본문내용문본문내용문본문내용문본문내용문본문내용문본문내용문본문내용문본문내용문본문내용문본문내용문본문내용문본문내용문본문내용문본문내용문본문내용문본문내용문본문내용문본문내용문본문내용문본문내용문본문내용문본문내용문본문내용문본문내용문본문내용문본문내용문본문내용문본문내용문본문내용문본문내용문본문내용문
+
+감사합니다.
+            </div>
+
+            <div class="flex items-center justify-between mt-10 pt-4 border-t border-gray-200 shrink-0">
+                <div class="flex gap-4">
+                    <label class="flex items-center gap-2">
+                        <i class="fa-solid fa-square-check text-[#007BFF]"></i>
+                        <span class="text-xs font-medium text-[#333]">공개</span>
+                    </label>
+                    <label class="flex items-center gap-2">
+                        <i class="fa-regular fa-square text-gray-400"></i>
+                        <span class="text-xs font-medium text-gray-400">비공개</span>
+                    </label>
+                </div>
+                
+                <div class="flex gap-2">
+                    <button class="px-3 py-1.5 bg-white border border-gray-200 rounded text-xs text-gray-500 font-medium hover:bg-gray-50">수정</button>
+                    <button class="px-3 py-1.5 bg-white border border-gray-200 rounded text-xs text-red-500 font-medium hover:bg-red-50 border-red-100">삭제</button>
+                </div>
+            </div>
+        </main>
+
+       <nav class="h-[85px] border-t border-gray-100 flex justify-between items-center px-2 bg-white pb-3 shrink-0 z-10">
+            <button class="bottom-nav-item"><i class="fa-solid fa-house text-xl"></i><span>홈</span></button>
+            <button class="bottom-nav-item"><i class="fa-regular fa-calendar text-xl"></i><span>좌석 관리</span></button>
+            <button class="bottom-nav-item active"><i class="fa-solid fa-bullhorn text-xl"></i><span>공지사항 관리</span></button>
+            <button class="bottom-nav-item">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="mb-0.5">
+                    <path d="M7.86 2H16.14L22 7.86V16.14L16.14 22H7.86L2 16.14V7.86L7.86 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                    <path d="M12 8V12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                    <path d="M12 16H12.01" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                </svg>
+                <span>신고 관리</span>
+            </button>
+        </nav>
+    </div>
+    </div>
+</body>
+</html>

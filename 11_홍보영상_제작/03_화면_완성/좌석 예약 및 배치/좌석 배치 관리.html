@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>스터디존 - 관리자 좌석 관리</title>
+    <style>
+        /* CSS: 기본 설정 및 레이아웃 - 좌석 조회와 통일 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Apple SD Gothic Neo', sans-serif;
+            background-color: #f5f5f5;
+            /* 요청 1: 세로 874px 설정 */
+            height: 874px; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            /* 요청 1: 가로 402px 설정 */
+            max-width: 402px;
+            width: 100%;
+            margin: 0 auto;
+            background: white;
+            /* 요청 1: 세로 874px 설정 */
+            height: 874px; 
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        /* Header - 좌석 조회와 통일 */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            border-bottom: 1px solid #e5e5e5;
+        }
+
+        .header h1 {
+            color: #007BFF;
+            font-size: 26px;
+            font-weight: bold;
+        }
+
+        .header-icons {
+            display: flex;
+            gap: 16px;
+        }
+
+        .icon {
+            width: 24px;
+            height: 24px;
+            color: #6b7280;
+            cursor: pointer;
+        }
+
+        /* Tabs - 좌석 조회와 통일 */
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #e5e5e5;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+            color: #6b7280;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab.active {
+            color: #007BFF;
+            border-bottom-color: #007BFF;
+            font-weight: 600;
+        }
+
+        /* Main Content */
+        .main-content {
+            background-color: #F8F9FA; 
+            flex: 1;
+            overflow-y: auto;
+            padding: 24px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #6b7280;
+            margin-bottom: 10px;
+        }
+
+        /* Seat Grid */
+        .seat-container {
+            background: #FFFFFF; 
+            border-radius: 16px;
+            padding: 24px;
+            max-width: 100%; 
+            margin: 0 auto 10px; 
+            box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2); 
+        }
+
+        .seat-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .seat-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            aspect-ratio: 1;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+
+            transition: all 0.2s;
+            border: 2px solid transparent;
+            min-height: 60px;
+            box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.2); 
+        }
+        .seat-item.active-seat:hover, .seat-item.in-use:hover{
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        /* 세로 직사각형 좌석 (C1, C2, C3, C4) */
+        .seat-item.tall {
+            grid-row: span 2;
+            aspect-ratio: 1 / 2.2; 
+            min-height: 120px;
+        }
+
+        /* 좌석 상태별 스타일 - 좌석 조회와 통일 */
+        .seat-item.active-seat { 
+            background: white;
+            color: black;
+            border-color: #d1d5db;
+        }
+        .seat-item.active-seat.selected {
+            background: #3b82f6; 
+            color: white;
+            border-color: #3b82f6;
+        }
+        .seat-item.in-use { 
+            background: #1f2937; 
+            color: white;
+            border-color: #1f2937;
+        }
+        .seat-item.in-use.selected {
+            background: #3b82f6; 
+            color: white;
+            border-color: #3b82f6;
+        }
+        .seat-item.disabled-seat { 
+            background: #e5e7eb; 
+            color: black; 
+            border-color: #d1d5db;
+            cursor: not-allowed;
+        }
+        /* .seat-item.disabled-seat.selected {
+            background: #3b82f6; 
+            color: white;
+            border-color: #3b82f6;
+        } */
+
+        /* 추가/삭제 가능한 빈 좌석 (점선 테두리) */
+        .seat-item.empty-spot {
+            background: none;
+            border: 2px dashed #d1d5db;
+            color: #6b7280;
+            font-size: 0;
+            box-shadow: none; 
+        }
+        .seat-item.empty-spot.selected {
+            border: 2px dashed #3b82f6;
+            background: rgba(59, 130, 246, 0.2);
+            color: #3b82f6;
+        }
+
+        /* 관리자용 레전드 - 좌석 조회와 통일 */
+        .legend {
+            display: flex;
+            justify-content: left;
+            gap: 24px;
+            font-size: 14px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #6b7280;
+        }
+
+        .legend-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            border: 1px solid #d1d5db;
+            box-shadow: inset 0 0 1px rgba(0, 0, 0, 0.2);
+        }
+
+        /* 레전드 색상 - 좌석 조회와 통일 */
+        .legend-item:nth-child(1) .legend-dot { background: white; border-color: #d1d5db; } 
+        .legend-item:nth-child(2) .legend-dot { background: #1f2937; border-color: #1f2937; box-shadow: none; } 
+        .legend-item:nth-child(3) .legend-dot { background: #e5e7eb; border-color: #d1d5db; } 
+
+
+        /* Bottom Action Button - 좌석 조회와 통일 */
+        .action-button-container {
+            position: relative; 
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            box-shadow: 0 -4px 12px rgba(0,0,0,0.1);
+            display: none;
+            z-index: 500; 
+            /* 요청 1: 컨테이너 너비에 맞게 */
+            max-width: 402px;
+            margin: 0 auto;
+            display: block;
+            width: 100%;
+        }
+        /* 버튼 컨테이너 내부의 패딩을 버튼 자체에 적용 */
+        .action-button-container .btn-margin {
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .action-button {
+            width: 100%;
+            padding: 14px;
+            background: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 0px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .action-button:disabled {
+            background: #d1d5db;
+            cursor: not-allowed;
+        }
+
+        /* Bottom Navigation - 좌석 조회와 통일 */
+        .bottom-nav {
+            display: flex;
+            justify-content: space-around;
+            border-top: 1px solid #e5e5e5;
+            padding: 0; 
+            background: white;
+            bottom: 0;
+            width: 100%;
+            max-width: 402px; 
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 8px;
+            cursor: pointer;
+            color: #6b7280;
+            text-decoration: none;
+        }
+
+        .nav-item.active {
+            color: #007BFF;
+        }
+
+        .nav-item svg {
+            width: 24px;
+            height: 24px;
+            margin-bottom: 4px;
+        }
+
+        .nav-item span {
+            font-size: 15px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Modal Style - 좌석 조회와 통일 */
+        .modal-overlay {
+            display: flex;
+            position: absolute; 
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: flex-end; 
+            z-index: 1000;
+            visibility: hidden;
+            opacity: 0;
+            transition: opacity 0.3s, visibility 0.3s;
+            max-width: 402px; 
+            margin: 0 auto; 
+        }
+
+        .modal-overlay.show {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 16px 16px 0 0; 
+            width: 100%;
+            max-width: 402px; 
+            padding: 0; 
+            transform: translateY(100%);
+            transition: transform 0.3s ease-out;
+            opacity: 0;
+        }
+
+        .modal-content2 {
+            background: rgba(255, 0, 0, 0);
+            border-radius: 8px 8px 0 0; 
+            width: 100%;
+            max-width: 402px; 
+            padding: 20px; 
+            transform: translateY(100%);
+            transition: transform 0.3s ease-out;
+            opacity: 0;
+        }
+
+        .modal-overlay.show .modal-content, .modal-overlay.show .modal-content2 {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        /* Confirmation & Complete Modal (중앙 팝업) - 좌석 조회와 통일 */
+        #confirmModal, #completeModal {
+            align-items: center; 
+        }
+
+        #confirmModal .modal-content, #completeModal .modal-content, #confirmModal .modal-content2, #completeModal .modal-content2 {
+            /* 중앙 정렬 팝업에 맞게 오버라이드 */
+            max-width: 270px; 
+            border-radius: 16px;
+            padding: 0;
+            transform: none; 
+            opacity: 1;
+            margin-bottom: 0; 
+            overflow: hidden;
+        }
+
+        .modal-title {
+            font-size: 17px; 
+            font-weight: 600; 
+            text-align: center;
+            margin-top: 24px;
+            margin-bottom: 4px;
+            padding: 0 16px;
+        }
+
+        .modal-text {
+            text-align: center;
+            color: #6b7280;
+            margin-bottom: 24px;
+            font-size: 13px; 
+            padding: 0 16px;
+        }
+
+        .modal-buttons {
+            display: flex; 
+            border-top: 0.5px solid #d1d5db; 
+        }
+
+        .btn-cancel {
+            flex: 1;
+            padding: 12px 8px;
+            border: none;
+            background: white;
+            font-weight: 400; 
+            font-size: 17px;
+            cursor: pointer;
+            color: #333;
+            border-right: 0.5px solid #d1d5db; 
+        }
+
+        .btn-confirm {
+            flex: 1;
+            padding: 12px 8px;
+            background: white;
+            color: #3b82f6; 
+            border: none;
+            font-weight: 600; 
+            font-size: 17px;
+            cursor: pointer;
+        }
+
+        /* 완료 모달 버튼 (하나만 있을 때) */
+        #completeModal .modal-buttons {
+            display: block;
+        }
+        #completeModal .btn-confirm {
+            width: 100%;
+            border-right: none;
+            font-weight: 600;
+        }
+
+        /* Action Sheet Modal (요청 이미지와 통일) */
+        #actionSheet .modal-content {
+            padding: 0; 
+            border-radius: 16px 16px 0 0; 
+            display: flex;
+            flex-direction: column;
+            gap: 8px; /* 버튼 그룹과 취소 버튼 사이 간격 */
+        }
+
+        .action-group {
+            background: rgba(255, 255, 255, 0);
+            border-radius: 9px; 
+            overflow: hidden; 
+        }
+
+        .action-list button {
+            width: 100%;
+            padding: 15px 20px;
+            text-align: center;
+            background: none;
+            border: none;
+            font-size: 18px;
+            color: #3b82f6; /* 모든 버튼 파란색 통일 */
+            cursor: pointer;
+            border-bottom: 0.5px solid #d1d5db; /* 얇은 구분선 */
+            background: rgba(255, 255, 255, 0.9);
+            font-weight: 400; /* 폰트 굵기 400 */
+            text-align: center;
+        }
+
+        .action-list button:last-child {
+            border-bottom: none;
+        }
+
+        /* 취소 버튼 스타일 */
+        #modalActionCancel {
+            margin-top: 8px; /* 상단에 마진 */
+            border-radius: 9px; 
+            background: rgba(255, 255, 255, 0.9);
+            font-size: 18px;
+            font-weight: 600; /* 폰트 굵기 600 */
+            color: #3b82f6;
+            padding: 15px 20px;
+            width: 100%;
+            border: none;
+            cursor: pointer;
+        }
+
+        /* 버튼 마진 */
+        .btn-margin{
+            padding: 20px
+        }
+
+        /*
+        * -----------------------------------------------------
+        * [타임랩스 제어용 CSS 블록] - 완성된 디자인을 역으로 파괴
+        * -----------------------------------------------------
+        */
+
+        /* Step 1: 뼈대 (주석 해제 시: 모든 요소가 세로로 단순 나열되고 경계가 표시됨) */
+        /*
+        body * {
+            display: block !important;
+            position: static !important;
+            grid: none !important;
+            flex: none !important;
+            align-items: normal !important;
+            justify-content: normal !important;
+            float: none !important;
+            width: auto !important;
+            height: auto !important;
+            margin: 4px 0 !important;
+            padding: 4px !important;
+            border: 1px solid #ccc !important; 
+            min-height: 20px !important;
+        }
+        .seat-item.tall { 
+            grid-row: auto !important;
+            aspect-ratio: auto !important; 
+            min-height: 20px !important;
+        }
+        .seat-grid {
+            display: block !important;
+        }
+        */
+
+        /* Step 2: 배치/레이아웃 (주석 해제 시: 와이어프레임처럼 보임, 배경 흰색, 글자 검은색) */
+        /*
+        .container, .main-content, .seat-container, .modal-content, .modal-content2, .action-group, .action-list button, #modalActionCancel {
+            background: white !important;
+            box-shadow: none !important;
+            border-radius: 0 !important;
+        }
+        body {
+            background-color: white !important;
+        }
+        .modal-overlay, .action-button-container {
+            position: static !important;
+            transform: none !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
+        */
+
+        /* Step 3: 타이포그래피 (주석 해제 시: 텍스트 계층 구조 무너짐) */
+        /*
+        body, .tab, .nav-item span, .modal-text, .btn-confirm, .btn-cancel, button {
+            font-family: monospace, serif !important;
+            font-weight: 400 !important;
+            font-size: 14px !important;
+        }
+        .header h1, .modal-title {
+            font-size: 16px !important;
+            font-weight: bold !important;
+        }
+        .seat-item {
+            font-size: 12px !important;
+            font-weight: normal !important;
+        }
+        */
+
+        /* Step 4: 색상 제거 (주석 해제 시: 모든 색상 흑백 강제) */
+        /*
+        .header h1, .tab.active, .nav-item.active, #modalActionCancel, .action-list button, .btn-confirm {
+            color: black !important;
+        }
+        .action-list button:last-child {
+            color: black !important; 
+        }
+        .seat-item.active-seat.selected, .seat-item.in-use, .seat-item.in-use.selected, .action-button {
+            background: #e5e7eb !important;
+            color: black !important;
+        }
+        .seat-item.active-seat, .seat-item.disabled-seat {
+            background: white !important;
+            color: black !important;
+        }
+        .legend-dot {
+            background: white !important;
+            border-color: black !important;
+        }
+        .legend-item:nth-child(2) .legend-dot, .legend-item:nth-child(3) .legend-dot { 
+            background: #e5e7eb !important; 
+            border-color: black !important;
+        }
+        .seat-item.empty-spot, .seat-item.empty-spot.selected {
+            background: white !important;
+            border-color: black !important;
+            color: black !important;
+        }
+        */
+
+        /* Step 5: 형태/깊이감 제거 (주석 해제 시: 평면적인 디자인으로 만듦) */
+        /*
+        .container, .seat-container, .seat-item, .modal-content, .modal-content2, .action-group, #modalActionCancel {
+            border-radius: 0 !important;
+            box-shadow: none !important;
+            filter: none !important;
+            border: 1px solid #333 !important; 
+        }
+        .legend-dot {
+            border-radius: 0 !important;
+        }
+        .seat-item {
+            border: 1px solid #333 !important;
+            box-shadow: none !important;
+        }
+        .seat-item.empty-spot {
+            border-style: solid !important;
+        }
+        .tab {
+            border-bottom-color: transparent !important;
+        }
+        */
+
+        /* Step 6: 아이콘/에셋 숨김 (주석 해제 시: 장식용 요소 숨김) */
+        /*
+        img, .icon {
+            visibility: hidden !important;
+            width: 0 !important;
+            height: 0 !important;
+        }
+        .nav-item img, .header-icons img {
+             display: none !important;
+        }
+        .legend-dot {
+            visibility: hidden !important;
+        }
+        .seat-item.empty-spot {
+            font-size: 14px !important;
+            text-align: center !important;
+        }
+        */
+
+        /* Step 7: 인터랙션/애니메이션 제거 (주석 해제 시: 인터랙션/애니메이션 제거) */
+        /*
+        * {
+            transition: none !important;
+            animation: none !important;
+            transform: none !important;
+            cursor: default !important;
+        }
+        .seat-item.active-seat:hover, .seat-item.in-use:hover{
+            transform: none !important;
+            box-shadow: none !important;
+        }
+        */
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>스터디존 - 관리자</h1>
+            <div class="header-icons">
+                <img src="icon6.png" alt="알림 아이콘" width="30" height="30" class="nav-icon-img">
+                <img src="icon8.png" alt="설정 아이콘" width="30" height="30" class="nav-icon-img">
+            </div>
+        </div>
+
+        <div class="tabs">
+            <button class="tab active">김수환관</button>
+            <button class="tab">인커라</button>
+            <button class="tab">스타트업</button>
+        </div>
+
+        <div class="main-content">
+            <p class="subtitle">수정할 좌석을 선택해주세요</p>
+            <div class="seat-container">
+                <div class="seat-grid" id="seatGrid">
+                </div>
+                
+            </div>
+            <div class="legend">
+                <div class="legend-item">
+                    <div class="legend-dot"></div>
+                    <span>활성화 된 좌석</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-dot" style="background: #e5e7eb; border-color: #d1d5db;"></div>
+                    <span>사용 중</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-dot" style="background: #1f2937; border-color: #1f2937;"></div>
+                    <span>비활성화 된 좌석</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="action-button-container hidden" id="actionButtonContainer">
+            <button class="action-button" id="mainActionButton" disabled>좌석 수정하기</button>
+        </div>
+
+        <div class="bottom-nav">
+            <a class="nav-item">
+                <img src="icon1.png" alt="홈 아이콘" width="30" height="30" class="nav-icon-img">
+                <span>홈</span>
+            </a>
+            <a class="nav-item active">
+                <img src="icon2.png" alt="좌석 관리 아이콘" width="30" height="30" class="nav-icon-img">
+                <span>좌석 관리</span>
+            </a>
+            <a class="nav-item">
+                <img src="icon9.png" alt="공지사항 아이콘" width="30" height="30" class="nav-icon-img">
+                <span>공지사항 관리</span>
+            </a>
+            <a class="nav-item">
+                <img src="icon5.png" alt="신고 관리 아이콘" width="30" height="30" class="nav-icon-img">
+                <span>신고 관리</span>
+            </a>
+        </div>
+
+        
+    <div class="modal-overlay" id="actionSheet">
+        <div class="modal-content2">
+            <div class="action-group">
+                <div class="action-list">
+                    <button id="modalActionActivate">좌석 활성화</button>
+                    <button id="modalActionDeactivate">좌석 비활성화</button>
+                    <button id="modalActionAdd">좌석 추가</button>
+                    <button id="modalActionDelete">좌석 삭제</button>
+                </div>
+            </div>
+            <button id="modalActionCancel" onclick="closeModal('actionSheet')">취소</button>
+        </div>
+    </div>
+    
+    <div class="modal-overlay" id="confirmModal">
+        <div class="modal-content">
+            <h3 class="modal-title" id="confirmTitle"></h3>
+            <p class="modal-text" id="confirmText"></p>
+            <div class="modal-buttons">
+                <button class="btn-cancel" onclick="closeModal('confirmModal')">취소</button>
+                <button class="btn-confirm" id="confirmBtn">확인</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="completeModal">
+        <div class="modal-content">
+            <h3 class="modal-title" id="completeTitle"></h3>
+            <p class="modal-text" id="completeText"></p>
+            <div class="modal-buttons">
+                <button class="btn-confirm" id="completeCloseBtn" onclick="closeModal('completeModal')" style="width: 100%; border-right: none;">닫기</button>
+            </div>
+        </div>
+    </div>
+
+    </div>
+    
+    <script>
+        // 초기 좌석 데이터 (9.png, 10.png, 11.png 상태)
+        let INITIAL_SEATS = [
+            // id: 좌석 번호, status: 'active-seat' | 'in-use' | 'disabled-seat' | 'empty-spot'
+            // tall: 세로 직사각형 여부 (C열)
+            { id: 'A1', status: 'in-use', tall: false },
+            { id: 'A2', status: 'active-seat', tall: false },
+            { id: 'A3', status: 'disabled-seat', tall: false },
+            { id: 'A4', status: 'disabled-seat', tall: false },
+            
+            { id: 'B1', status: 'active-seat', tall: false },
+            { id: 'B2', status: 'active-seat', tall: false },
+            { id: 'B3', status: 'disabled-seat', tall: false },
+            { id: 'B4', status: 'disabled-seat', tall: false },
+            
+            // C열 좌석에 tall: true 추가 (좌석 조회와 통일)
+            { id: 'C1', status: 'active-seat', tall: true },
+            { id: 'C2', status: 'active-seat', tall: true },
+            { id: 'C3', status: 'disabled-seat', tall: true },
+            { id: 'C4', status: 'disabled-seat', tall: true },
+        ];
+
+        let seatsData = [...INITIAL_SEATS];
+        let selectedSeats = [];
+        let currentModalAction = ''; // 'activate', 'deactivate', 'add', 'delete'
+
+        const seatGrid = document.getElementById('seatGrid');
+        const actionButtonContainer = document.getElementById('actionButtonContainer');
+        const mainActionButton = document.getElementById('mainActionButton');
+
+        // JS: 좌석 그리드 초기화 및 렌더링
+        function initSeats() {
+            seatGrid.innerHTML = '';
+            
+            seatsData.forEach((seat) => {
+                const seatEl = document.createElement('div');
+                // tall 클래스 추가
+                seatEl.className = `seat-item ${seat.status} ${seat.tall ? 'tall' : 'square'}`;
+                seatEl.textContent = seat.id !== 'empty-spot' ? seat.id : '';
+                seatEl.dataset.id = seat.id;
+                seatEl.dataset.tall = seat.tall;
+                
+                // 좌석 선택 이벤트 리스너 추가 (empty-spot도 선택 가능)
+                if (seat.status != 'disabled-seat') {
+                    seatEl.addEventListener('click', () => toggleSeatSelection(seat.id));
+                }
+                seatGrid.appendChild(seatEl);
+            });
+            updateMainButton();
+        }
+
+        // JS: 좌석 선택 토글
+        function toggleSeatSelection(seatId) {
+            const seatEl = document.querySelector(`.seat-item[data-id="${seatId}"]`);
+            const seat = seatsData.find(s => s.id === seatId);
+
+            // 사용 중이거나 비활성화된 좌석도 관리자는 선택 가능
+            if (seatEl.classList.contains('selected')) { //seat.status === 'available'
+                // 선택 해제
+                seatEl.classList.remove('selected');
+                selectedSeats = selectedSeats.filter(id => id !== seatId);
+            } else {
+                // 선택
+                seatEl.classList.add('selected');
+                selectedSeats.push(seatId);
+            }
+            updateMainButton();
+        }
+
+        // JS: 메인 액션 버튼 (좌석 수정하기) 업데이트
+        function updateMainButton() {
+            if (selectedSeats.length > 0) {
+                const isAllEmpty = selectedSeats.every(id => seatsData.find(s => s.id === id && s.status === 'empty-spot'));
+                
+                if (isAllEmpty) {
+                    mainActionButton.textContent = `빈 좌석 수정하기`;
+                    actionButtonContainer.classList.add('empty-spot-mode');
+                } else {
+                    const seatsText = selectedSeats.join(', ');
+                    mainActionButton.textContent = `${seatsText} 좌석 수정하기`;
+                    actionButtonContainer.classList.remove('empty-spot-mode');
+                }
+
+                mainActionButton.disabled = false;
+                actionButtonContainer.classList.remove('hidden');
+            } else {
+                mainActionButton.textContent = `좌석 수정하기`;
+                mainActionButton.disabled = true;
+                actionButtonContainer.classList.add('hidden');
+            }
+        }
+
+        // JS: 모달 열기 함수 (공용)
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('show');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('show');
+            
+            if (modalId === 'completeModal') {
+                resetSelection(); // 완료 후 선택 초기화
+            }
+        }
+
+        // JS: Action Sheet 오버레이 클릭 시 닫기
+        document.getElementById('actionSheet').addEventListener('click', function(e) {
+            if (e.target.id === 'actionSheet') {
+                closeModal('actionSheet');
+            }
+        });
+
+        // JS: 선택 초기화
+        function resetSelection() {
+            document.querySelectorAll('.seat-item.selected').forEach(s => s.classList.remove('selected'));
+            selectedSeats = [];
+            updateMainButton();
+            currentModalAction = '';
+            
+            // 모든 모달 숨김
+            document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('show'));
+        }
+
+        // JS: 메인 액션 버튼 클릭 -> Action Sheet 열기 (12.png, 21.png)
+        mainActionButton.onclick = function() {
+            openModal('actionSheet');
+            
+            // 빈 좌석만 선택했을 경우 '좌석 추가'만 파란색, 나머지는 회색(비활성화)으로 시각적 구분
+            const isAllEmpty = selectedSeats.every(id => seatsData.find(s => s.id === id && s.status === 'empty-spot'));
+            
+            const activateBtn = document.getElementById('modalActionActivate');
+            const deactivateBtn = document.getElementById('modalActionDeactivate');
+            const addBtn = document.getElementById('modalActionAdd');
+            const deleteBtn = document.getElementById('modalActionDelete');
+
+            // 빈 좌석만 선택했을 경우 활성화/비활성화/삭제 버튼 색상을 회색으로 변경 (실제 로직은 클릭 시 오류 모달로 처리)
+            activateBtn.style.color = isAllEmpty ? '#d1d5db' : '#3b82f6';
+            deactivateBtn.style.color = isAllEmpty ? '#d1d5db' : '#3b82f6';
+            deleteBtn.style.color = isAllEmpty ? '#d1d5db' : '#E03535';
+            addBtn.style.color = '#3b82f6'; // 추가는 항상 파란색
+        }
+
+        // JS: Confirm 모달 열기
+        function openConfirmModal(title, text, actionType) {
+            document.getElementById('confirmTitle').textContent = title;
+            document.getElementById('confirmText').textContent = text;
+            currentModalAction = actionType;
+            closeModal('actionSheet'); // 액션 시트 닫기
+            openModal('confirmModal');
+        }
+
+        // JS: Complete 모달 열기
+        function openCompleteModal(title, text) {
+            document.getElementById('completeTitle').textContent = title;
+            document.getElementById('completeText').textContent = text;
+            openModal('completeModal');
+        }
+
+        // JS: Action Sheet 버튼 핸들러
+        document.getElementById('modalActionActivate').onclick = () => {
+            const isAllEmpty = selectedSeats.every(id => seatsData.find(s => s.id === id && s.status === 'empty-spot'));
+            if (isAllEmpty) {
+                openConfirmModal('오류', '빈 좌석은 활성화 할 수 없습니다.', 'error');
+                return;
+            } 
+
+            const seatList = selectedSeats.join(', ');
+            openConfirmModal('좌석 활성화', `정말로 ${seatList} 좌석을 활성화 하시겠습니까?`, 'activate');
+        };
+
+        document.getElementById('modalActionDeactivate').onclick = () => {
+            const isAllEmpty = selectedSeats.every(id => seatsData.find(s => s.id === id && s.status === 'empty-spot'));
+            if (isAllEmpty) {
+                openConfirmModal('오류', '빈 좌석은 비활성화 할 수 없습니다.', 'error');
+                return;
+            } 
+
+            const seatList = selectedSeats.join(', ');
+            openConfirmModal('좌석 비활성화', `정말로 ${seatList} 좌석을 비활성화 하시겠습니까?`, 'deactivate');
+        };
+
+        document.getElementById('modalActionAdd').onclick = () => {
+            // 빈 좌석이 아닌 좌석을 선택하고 "추가" 버튼을 누른 경우를 방지
+            const isAnyActiveOrDisabled = selectedSeats.some(id => {
+                const seat = seatsData.find(s => s.id === id);
+                return seat && (seat.status !== 'empty-spot');
+            });
+
+            if (isAnyActiveOrDisabled && !selectedSeats.every(id => seatsData.find(s => s.id === id && s.status === 'empty-spot'))) {
+                openConfirmModal('오류', '이미 존재하는 좌석은 추가할 수 없습니다. (빈 좌석만 선택해주세요)', 'error');
+                return;
+            }
+            
+            // 선택된 좌석이 없을 경우 추가 불가
+            if (selectedSeats.length === 0) {
+                openConfirmModal('오류', '추가할 좌석을 먼저 선택해주세요.', 'error');
+                return;
+            }
+
+            openConfirmModal('좌석 추가', `정말로 선택한 좌석을 추가 하시겠습니까?`, 'add');
+        };
+
+        document.getElementById('modalActionDelete').onclick = () => {
+            const isAllEmpty = selectedSeats.every(id => seatsData.find(s => s.id === id && s.status === 'empty-spot'));
+            if (isAllEmpty) {
+                openConfirmModal('오류', '빈 좌석은 삭제할 수 없습니다.', 'error');
+                return;
+            }
+
+            const seatList = selectedSeats.join(', ');
+            openConfirmModal('좌석 삭제', `정말로 ${seatList} 좌석을 삭제 하시겠습니까?`, 'delete');
+        };
+
+        // JS: Confirm 모달 '확인' 버튼 핸들러 (실제 동작 로직)
+        document.getElementById('confirmBtn').onclick = function() {
+            closeModal('confirmModal');
+
+            const seatList = selectedSeats.join(', ');
+            let completeTitle = '';
+            let completeText = '';
+            
+            // 오류 모달인 경우
+            if (currentModalAction === 'error') {
+                resetSelection();
+                return; 
+            }
+
+            switch(currentModalAction) {
+                case 'activate':
+                    completeTitle = '활성화 완료';
+                    completeText = `${seatList} 좌석을 활성화 했습니다.`;
+                    
+                    selectedSeats.forEach(id => {
+                        const seat = seatsData.find(s => s.id === id);
+                        if (!seat) return;
+                        if (seat.status === 'in-use' || seat.status === 'empty-spot') {
+                            seat.status = 'active-seat';
+                        }
+                    });
+                    break;
+                case 'deactivate':
+                    completeTitle = '비활성화 완료';
+                    completeText = `${seatList} 좌석을 비활성화 했습니다.`;
+                    
+                    selectedSeats.forEach(id => {
+                        const seat = seatsData.find(s => s.id === id);
+                        if (!seat) return;
+                        
+                        if (seat.status === 'active-seat' || seat.status === 'in-use') {
+                            seat.status = 'in-use';
+                        }
+                    });
+                    break;
+                case 'add':
+                    completeTitle = '추가 완료';
+                    completeText = `선택한 좌석을 추가했습니다.`;
+
+                    selectedSeats.forEach(id => {
+                        const seat = seatsData.find(s => s.id === id);
+                        if (seat && seat.status === 'empty-spot') {
+                            seat.status = 'active-seat'; // 빈 좌석 -> 활성화된 좌석
+                        }
+                    });
+                    break;
+                case 'delete':
+                    completeTitle = '삭제 완료';
+                    completeText = `${seatList} 좌석을 삭제 했습니다.`;
+
+                    selectedSeats.forEach(id => {
+                        const seat = seatsData.find(s => s.id === id);
+                        if (seat && seat.status !== 'empty-spot') {
+                            seat.status = 'empty-spot'; // 모든 좌석 상태 -> 빈 좌석
+                        }
+                    });
+                    break;
+            }
+            
+            initSeats(); // 변경된 데이터로 좌석 새로고침
+            openCompleteModal(completeTitle, completeText);
+        };
+
+
+        initSeats();
+    </script>
+</body>
+</html>

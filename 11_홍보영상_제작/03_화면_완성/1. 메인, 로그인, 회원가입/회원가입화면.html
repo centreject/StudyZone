@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>스터디존 - 회원가입 (Timelapse Ready)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Typography & Base Reset */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard", sans-serif;
+            background-color: #2b2b2b;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 40px 0;
+            margin: 0;
+        }
+
+        /* Mobile Container Frame */
+        .app-container {
+            width: 402px;
+            height: 874px;
+            background-color: #FFFFFF;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+            border-radius: 40px;
+            overflow: hidden;
+            /* 베젤 추가 */
+            border: 12px solid #1a1a1a;
+            flex-shrink: 0;
+        }
+
+        /* Custom Input Style */
+        .custom-input {
+            transition: all 0.2s ease-in-out;
+            background-color: #F3F4F6;
+        }
+        .custom-input:focus {
+            background-color: #FFFFFF;
+            border-color: #007BFF;
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+            outline: none;
+        }
+        
+        .input-label {
+            font-size: 13px;
+            font-weight: 700;
+            color: #6B7280;
+            margin-left: 4px;
+            margin-bottom: 5px;
+        }
+
+        /* ==========================================================================
+        [🎥 UI 타임랩스 촬영용 컨트롤러]
+        
+        * 촬영 가이드:
+          1. 이 파일을 브라우저에서 열고 화면 녹화를 시작하세요.
+          2. 아래 [Step 1]부터 [Step 7]까지 순서대로 주석( / * ... * / )을 해제하세요.
+             (단축키: 드래그 후 Ctrl + / 또는 Cmd + /)
+          3. 디자인이 완성 -> 뼈대로 파괴되는 과정이 녹화됩니다.
+          4. 편집 툴에서 영상을 '역재생(Reverse)'하면 뼈대 -> 완성 타임랩스가 됩니다.
+        ==========================================================================
+        */
+
+        /* [Step 1: 뼈대] - 레이아웃 파괴, 단순 나열, 영역 표시 */
+        /*
+        body * {
+            display: block !important;
+            position: static !important;
+            grid-template-columns: none !important;
+            flex: none !important;
+            width: auto !important;
+            height: auto !important;
+            margin: 5px !important;
+            padding: 5px !important;
+            border: 1px dashed #ccc !important;
+            background: none !important;
+            transform: none !important;
+            left: auto !important;
+            top: auto !important;
+            right: auto !important;
+            bottom: auto !important;
+        }
+        */
+
+        /* [Step 2: 배치/레이아웃] - 와이어프레임화, 컨테이너 베젤/그림자 제거 */
+
+        * {
+            border-radius: 0 !important;
+            box-shadow: none !important;
+            border: 1px solid #e5e5e5 !important;
+            background-color: #fff !important;
+        }
+        .app-container {
+            border: 1px solid #000 !important;
+            box-shadow: none !important;
+        }
+
+
+        /* [Step 3: 타이포그래피] - 폰트 통일, 계층 구조 제거 */
+
+        body, div, p, h1, h2, h3, span, a, button, input, label {
+            font-family: 'Courier New', monospace !important;
+            font-weight: 400 !important;
+            font-size: 14px !important;
+            letter-spacing: normal !important;
+            line-height: 1.5 !important;
+            text-align: left !important;
+        }
+
+
+        /* [Step 4: 색상 제거] - 흑백 모드 강제, Tailwind 색상 무력화 */
+
+        * {
+            color: #000 !important;
+            background-color: #ffffff !important;
+            background-image: none !important;
+            border-color: #000 !important;
+            text-shadow: none !important;
+        }
+        .text-white { color: #000 !important; }
+        .bg-blue-600, .bg-[#007BFF] { background-color: #fff !important; }
+
+
+        /* [Step 5: 형태/깊이감 제거] - 평면 디자인화 */
+
+        * {
+            border-radius: 0 !important;
+            box-shadow: none !important;
+            filter: none !important;
+            backdrop-filter: none !important;
+        }
+
+
+        /* [Step 6: 아이콘/에셋 숨김] - 이미지 및 아이콘 제거 */
+
+        img, svg, i, .fa-solid, .dot {
+            visibility: hidden !important;
+            width: 0 !important;
+            height: 0 !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            opacity: 0 !important;
+        }
+
+
+        /* [Step 7: 인터랙션/애니메이션 제거] - 정적 상태 고정 */
+        
+        * {
+            transition: none !important;
+            animation: none !important;
+            transform: none !important;
+            cursor: default !important;
+        }
+        *:hover, *:active, *:focus {
+            background-color: transparent !important;
+            color: inherit !important;
+            box-shadow: none !important;
+            transform: none !important;
+            opacity: 1 !important;
+        }
+       
+    </style>
+</head>
+<body>
+
+    <div class="app-container relative">
+        
+        <!-- Status Bar -->
+        <div class="h-[47px] w-full bg-white z-20 shrink-0 flex justify-between items-end px-6 pb-2">
+            <div class="font-semibold text-black text-[15px] tracking-wide ml-1">9:41</div>
+            <div class="flex items-center gap-2 text-black mr-1">
+                <i class="fa-solid fa-signal text-[12px]"></i>
+                <i class="fa-solid fa-wifi text-[12px]"></i>
+                <i class="fa-solid fa-battery-full text-[18px]"></i>
+            </div>
+        </div>
+
+        <!-- Main Content (스크롤 없음: overflow-hidden) -->
+        <main class="flex-1 flex flex-col px-8 pt-2 pb-8 overflow-hidden">
+            
+            <!-- Header Area -->
+            <div class="flex flex-col items-center justify-center shrink-0 mb-2">
+                <div class="mb-3">
+                    <img src="media/logo.png" alt="가톨릭대학교 로고" class="h-9 w-auto object-contain">
+                </div>
+                
+                <div class="mb-3">
+                    <img src="media/hi.png" alt="마스코트" class="w-24 h-24 object-cover rounded-full shadow-sm">
+                </div>
+
+                <h2 class="text-[#007BFF] font-bold text-[18px] text-center leading-snug">
+                    스터디존에 오신 걸<br>환영합니다!
+                </h2>
+            </div>
+
+            <!-- Form Area (균등 배치) -->
+            <form class="w-full flex-1 flex flex-col justify-evenly">
+                
+                <div class="flex flex-col">
+                    <label for="username" class="input-label">이름</label>
+                    <input type="text" id="username" placeholder="이름을 입력하세요" 
+                        class="custom-input w-full h-[48px] px-4 rounded-xl border border-transparent text-[14px] placeholder-gray-400">
+                </div>
+
+                <div class="flex flex-col">
+                    <label for="studentId" class="input-label">아이디 (학번)</label>
+                    <input type="number" id="studentId" placeholder="학번을 입력하세요" 
+                        class="custom-input w-full h-[48px] px-4 rounded-xl border border-transparent text-[14px] placeholder-gray-400">
+                </div>
+
+                <div class="flex flex-col gap-2">
+                    <label class="input-label">비밀번호</label>
+                    <input type="password" id="password" placeholder="비밀번호를 입력하세요" 
+                        class="custom-input w-full h-[48px] px-4 rounded-xl border border-transparent text-[14px] placeholder-gray-400">
+                    <input type="password" id="passwordConfirm" placeholder="비밀번호를 다시 입력하세요" 
+                        class="custom-input w-full h-[48px] px-4 rounded-xl border border-transparent text-[14px] placeholder-gray-400">
+                </div>
+
+                <div class="flex flex-col">
+                    <label for="email" class="input-label">학교 이메일</label>
+                    <input type="email" id="email" placeholder="example@catholic.ac.kr" 
+                        class="custom-input w-full h-[48px] px-4 rounded-xl border border-transparent text-[14px] placeholder-gray-400">
+                </div>
+
+                <div class="pt-2">
+                    <button type="button" class="w-full h-[54px] bg-[#007BFF] hover:bg-blue-600 text-white font-bold rounded-xl shadow-lg shadow-blue-100 active:scale-95 transition-all duration-200 text-[17px]">
+                        가입하기
+                    </button>
+                </div>
+
+            </form>
+        </main>
+
+        <!-- Footer -->
+        <footer class="w-full text-center pb-6 pt-0 bg-white shrink-0">
+            <p class="text-[10px] text-[#545454] opacity-50 font-medium">
+                © 2025 StudyZone. All rights reserved.
+            </p>
+        </footer>
+
+        <!-- Home Indicator -->
+        <div class="absolute bottom-2 w-full flex justify-center pb-1 z-30 pointer-events-none">
+            <div class="w-[134px] h-[5px] bg-black rounded-full"></div>
+        </div>
+
+    </div>
+
+</body>
+</html>
