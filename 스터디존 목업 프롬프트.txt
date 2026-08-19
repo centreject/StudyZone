@@ -1,0 +1,205 @@
+'스터디존' 프로젝트 와이어프레임 설계 요약 보고서
+
+본 문서는 '스터디존' 좌석 예약 시스템 프로젝트의 시작부터 와이어프레임 완성까지의 주요 설계 의사결정 과정과 최종 산출물을 정리한 것입니다.
+
+1. 프로젝트 개요 및 요구사항 분석
+
+1.1 프로젝트 목표
+
+시험 기간 등 혼잡한 시기에 교내 자습 공간(인커라, 도서관, 스타트업 라운지 등)의 좌석 부족 문제를 해결하고, 효율적인 공간 활용을 위한 좌석 예약 시스템 구축.
+
+1.2 핵심 요구사항 (Requirements)
+
+실시간 좌석 확인: 센서 기반의 착석 여부 감지 및 UI 반영.
+
+간편 예약: 모바일 앱을 통한 직관적인 좌석 선택 및 예약.
+
+외부 시스템 연동: 중앙도서관 등 기존 교내 시스템과 연동하여 통합 예약 제공.
+
+공정성 확보: 장시간 자리 비움 시 자동 패널티 부여 등 규칙 적용.
+
+1.3 액터 및 유스케이스 (Actors & Use Cases)
+
+액터: 학생(사용자), 관리자, 센서 시스템, 외부 예약 시스템.
+
+주요 유스케이스:
+
+좌석 현황 조회
+
+좌석 예약 (일반 / 외부 시스템 연동)
+
+내 예약 관리 (취소, 상세 확인)
+
+이용 기록 조회
+
+규칙 위반 신고
+
+2. 시스템 아키텍처 및 디자인 패턴
+
+시스템의 안정성과 확장성을 고려하여 다음과 같이 아키텍처와 패턴을 선정했습니다.
+
+2.1 아키텍처 (Architecture)
+
+메인: 이벤트 기반 아키텍처 (Event-Driven Architecture)
+
+선정 이유: 센서의 상태 변화(착석, 이석 등)가 시스템 동작의 핵심 트리거가 되므로, 비동기적 이벤트 처리에 최적화된 구조를 채택.
+
+서브: 계층형 아키텍처 (Layered Architecture)
+
+선정 이유: 사용자 인증, 예약 요청 등 즉각적인 응답이 필요한 기능의 안정적인 처리를 위해 MVC 패턴 기반의 계층 구조를 병행 사용.
+
+2.2 디자인 패턴 (Design Patterns)
+
+상태 패턴 (State Pattern): Seat, Reservation 등 객체의 복잡한 상태 변화(예약 가능 -> 예약됨 -> 사용 중)를 체계적으로 관리.
+
+옵저버 패턴 (Observer Pattern): 센서 데이터 변경 시 UI 및 예약 시스템에 실시간으로 상태 변화를 전파.
+
+어댑터 패턴 (Adapter Pattern): 규격이 다른 외부 도서관 시스템과의 원활한 연동을 위해 인터페이스 변환 수행.
+
+(전략 패턴은 소규모 프로젝트의 효율성을 위해 제외됨)
+
+3. UI/UX 디자인 컨셉
+
+3.1 디자인 컨셉: 모듈형 타일 대시보드 (Modular Tile Dashboard)
+
+선정 이유: 영화관 예매 시스템과 유사한 '격자형 타일(Grid)' 구조를 채택하여, 별도의 학습 없이 누구나 직관적으로 사용할 수 있는 대중적인 UI 제공.
+
+3.2 컬러 팔레트 (Standard & Clear)
+
+메인 컬러: Primary Blue (#007BFF) - 신뢰감과 행동 유도 (버튼, 활성 탭).
+
+서브 컬러: White (#FFFFFF), Light Gray (#F8F9FA) - 깔끔한 배경 및 카드.
+
+텍스트 컬러: Dark Text (#212529) - 높은 가독성.
+
+포인트 컬러: Red (#DC3545) - 취소 등 중요/위험 액션.
+
+4. 와이어프레임 및 목업 (최종 산출물)
+
+4.1 주요 화면 구성
+
+A. 로그인 화면
+
+학교 로고와 '스터디존' 타이틀 배치.
+
+깔끔한 아이디/비밀번호 입력창과 파란색 로그인 버튼.
+
+B. 내 예약 화면 (메인)
+
+현재 예약 장소: "인커라 (1층)" 등 장소명 강조.
+
+좌석 배치도: 3열 그리드 구조
+
+상태 표시: 내 좌석(파랑), 사용 중(회색), 빈 좌석(흰색).
+
+예약 상세: 좌석 번호, 시간, 상태 정보 카드.
+
+예약 취소: 하단에 빨간색 취소 버튼 배치 (클릭 시 iOS 스타일 팝업 호출).
+
+C. 이용 기록 화면
+
+달력: 월별 이동 기능, 전체 날짜(1~30일) 표시.
+
+이용 기록이 있는 날짜 하단에 파란 점(•) 표시.
+
+통계 요약: 월간/연간 이용 횟수 및 총 이용 시간 통계 카드.
+
+상세 팝업: 날짜 클릭 시 해당 일자의 상세 이용 내역을 팝업으로 표시.
+
+D. 공통 요소
+
+사이드 메뉴 (Drawer): 우측 상단 햄버거 버튼 클릭 시 슬라이드 메뉴 표시 (내 예약, 이용 기록 이동).
+
+하단 네비게이션 바: 홈, 좌석 예약, 이용 기록, 친구, 신고 5개 탭 구성.
+
+4.2 인터랙션 (Interaction)
+
+화면 전환: 하단 탭 및 사이드 메뉴를 통한 부드러운 화면 전환.
+
+팝업: 예약 취소 확인 및 이용 기록 상세 보기를 위한 모달 팝업 구현.
+
+상태 반영: 예약 취소 시 '예약 없음' 상태로 화면 즉시 갱신.
+
+내용을 기억
+
+---------------
+UI 구현 가이드라인 프롬프트
+
+# Role
+당신은 Tailwind CSS와 HTML5를 전문으로 다루는 프론트엔드 퍼블리싱 전문가입니다. 
+내가 업로드하는 UI 이미지(와이어프레임 또는 스케치)를 분석하여, 아래에 정의된 **[Design System]**과 **[Reference Code]**의 스타일을 완벽하게 따르는 HTML 코드로 변환해야 합니다.
+
+# Goal
+업로드된 이미지를 분석하여, 기존 프로젝트('스터디존')와 톤앤매너가 일치하는 고품질의 HTML/CSS 코드를 작성하십시오.
+
+# Design System (Strict Rules)
+1. **Container (Mobile Frame):**
+   - 너비: `402px`, 높이: `874px` (또는 콘텐츠에 따라 유동적)
+   - 스타일: `border-radius: 30px`, `box-shadow: 0 0 50px rgba(0,0,0,0.5)`
+   - 중앙 정렬된 모바일 앱 형태 유지.
+   
+2. **Color Palette:**
+   - Primary: `#007BFF` (Buttons, Active states, Highlights)
+   - Background: `#F8F9FA` (Main BG), `#FFFFFF` (Cards, Headers)
+   - Text: `#333333` (Main), `#545454` (Sub), `#007BFF` (Points)
+   - Point/Danger: `#FF3B30`
+
+3. **Typography:**
+   - Font Stack: `-apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard", ...`
+   - Headings: Bold, clean styling.
+
+4. **Libraries:**
+   - Tailwind CSS (CDN): `<script src="https://cdn.tailwindcss.com"></script>`
+   - FontAwesome (CDN): `<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">`
+
+# Reference Code (Style Template)
+새로 작성할 코드는 반드시 아래 코드의 구조(Header, Main, Nav)와 클래스명 스타일을 상속받아야 합니다.
+
+```html
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="[https://cdn.tailwindcss.com](https://cdn.tailwindcss.com)"></script>
+    <link rel="stylesheet" href="[https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css](https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css)">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard", sans-serif;
+            background-color: #2b2b2b; height: 100vh; display: flex; align-items: center; justify-content: center; margin: 0;
+        }
+        .app-container {
+            width: 402px; height: 874px; background-color: #F8F9FA; display: flex; flex-direction: column;
+            position: relative; box-shadow: 0 0 50px rgba(0,0,0,0.5); border-radius: 30px; overflow: hidden;
+        }
+        /* 공통 UI 요소 스타일 */
+        .bottom-nav-item { color: #545454; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; font-size: 11px; height: 100%; width: 20%; }
+        .bottom-nav-item.active { color: #007BFF; font-weight: 600; }
+        header { height: 60px; padding: 0 20px; display: flex; align-items: center; justify-content: space-between; background-color: #fff; border-bottom: 1px solid #eee; }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <h1 class="text-xl font-bold text-[#007BFF]">앱 타이틀</h1>
+            <div class="flex items-center gap-4">
+                <button class="text-gray-500"><i class="fa-solid fa-bars text-xl"></i></button>
+            </div>
+        </header>
+
+        <main class="flex-1 overflow-y-auto bg-[#F8F9FA] p-5">
+            <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 mb-4">
+                <h3 class="font-bold text-gray-800">카드 예시</h3>
+            </div>
+        </main>
+
+        <nav class="h-[85px] border-t border-gray-100 flex justify-between items-center px-2 bg-white pb-3">
+            <button class="bottom-nav-item active"><i class="fa-solid fa-house text-2xl"></i><span>홈</span></button>
+            <button class="bottom-nav-item"><i class="fa-regular fa-calendar text-2xl"></i><span>예약</span></button>
+            <button class="bottom-nav-item"><i class="fa-regular fa-clock text-2xl"></i><span>기록</span></button>
+            <button class="bottom-nav-item"><i class="fa-solid fa-users text-2xl"></i><span>친구</span></button>
+            <button class="bottom-nav-item"><i class="fa-solid fa-gear text-2xl"></i><span>설정</span></button>
+        </nav>
+    </div>
+</body>
+</html>

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard", sans-serif;
+            background-color: #2b2b2b;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+        }
+        .app-container {
+            width: 402px;
+            height: 874px;
+            background-color: #F8F9FA;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+            border-radius: 30px;
+            overflow: hidden;
+        }
+        .bottom-nav-item {
+            color: #545454;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            font-size: 11px;
+            height: 100%;
+            width: 20%;
+        }
+        .bottom-nav-item.active { color: #007BFF; font-weight: 600; }
+        header {
+            height: 60px;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: #fff;
+            border-bottom: 1px solid #eee;
+        }
+    </style>
+</head>
+
+<body>
+<div class="app-container">
+
+    <!-- HEADER -->
+    <header>
+        <h1 class="text-xl font-bold text-[#007BFF]">스터디존</h1>
+        <button class="text-gray-600">
+            <i class="fa-regular fa-bell text-xl"></i>
+        </button>
+    </header>
+
+    <!-- MAIN -->
+    <main class="flex-1 overflow-y-auto bg-[#F8F9FA] relative">
+
+        <!-- Title Row -->
+        <div class="flex items-center px-5 pt-5 gap-3">
+            <button><i class="fa-solid fa-chevron-left text-lg text-gray-700"></i></button>
+            <h2 class="text-xl font-bold text-gray-800">친구 목록</h2>
+        </div>
+
+        <!-- Search -->
+        <div class="px-5 mt-5">
+            <div class="bg-white border border-gray-200 rounded-full h-11 px-4 flex items-center gap-3 shadow-sm">
+                <i class="fa-solid fa-magnifying-glass text-gray-400"></i>
+                <input class="flex-1 text-sm bg-transparent focus:outline-none text-gray-600" placeholder="이름 혹은 아이디 검색" />
+            </div>
+        </div>
+
+        <!-- List -->
+        <div class="mt-4 border-t border-gray-200 pb-40">
+
+            <div class="flex items-center gap-3 px-5 py-4 border-b border-gray-200">
+                <div class="w-4 h-4 border border-gray-400 rounded-full"></div>
+                <span class="text-gray-700 text-[15px]">홍길동</span>
+            </div>
+
+            <!-- 이 아래가 오버레이 카드가 뜨는 기준 지점이라고 가정 -->
+            <div class="flex items-center gap-3 px-5 py-4 border-b border-gray-200">
+                <div class="w-4 h-4 rounded-full border-4 border-[#007BFF]"></div>
+                <span class="text-gray-700 text-[15px]">홍길동2</span>
+            </div>
+
+            <div class="flex items-center gap-3 px-5 py-4 border-b border-gray-200">
+                <div class="w-4 h-4 border border-gray-400 rounded-full"></div>
+                <span class="text-gray-700 text-[15px]">홍길동3</span>
+            </div>
+
+            <div class="flex items-center gap-3 px-5 py-4 border-b border-gray-200">
+                <div class="w-4 h-4 rounded-full border-4 border-[#007BFF]"></div>
+                <span class="text-gray-700 text-[15px]">홍길동4</span>
+            </div>
+
+            <div class="flex items-center gap-3 px-5 py-4 border-b border-gray-200">
+                <div class="w-4 h-4 rounded-full border-4 border-[#007BFF]"></div>
+                <span class="text-gray-700 text-[15px]">홍길동5</span>
+            </div>
+
+            <div class="flex items-center gap-3 px-5 py-4">
+                <div class="w-4 h-4 border border-gray-400 rounded-full"></div>
+                <span class="text-gray-700 text-[15px]">홍길동6</span>
+            </div>
+
+        </div>
+
+<!-- Dimmed Background -->
+<div class="absolute inset-0 bg-black bg-opacity-20 flex items-center justify-center px-6 z-50">
+
+    <!-- Popup Card -->
+    <div class="bg-white rounded-2xl shadow-lg w-full max-w-[310px] overflow-hidden">
+
+        <!-- Text Block -->
+        <div class="px-6 pt-6 pb-5 text-center">
+            <!-- Title -->
+            <p class="text-gray-900 text-[17px] font-semibold mb-3">
+                친구 등록이 완료되었습니다.
+            </p>
+
+            <!-- Message -->
+            <p class="text-gray-600 text-[14px] leading-relaxed">
+                ‘홍길동’ 님이 친구 목록에 추가되었습니다.
+            </p>
+        </div>
+
+        <!-- Divider -->
+        <div class="w-full h-[1px] bg-gray-200"></div>
+
+        <!-- Button -->
+        <button class="w-full py-3 text-[#007AFF] text-[17px] font-medium">
+            확인
+        </button>
+
+    </div>
+</div>
+
+
+
+    </main>
+         <nav class="h-[85px] border-t border-gray-100 flex justify-between items-center px-2 bg-white pb-3">
+        <button class="bottom-nav-item"><i class="fa-solid fa-house text-xl"></i><span>홈</span></button>
+        <button class="bottom-nav-item"><i class="fa-regular fa-calendar text-xl"></i><span>좌석 예약</span></button>
+        <button class="bottom-nav-item"><i class="fa-regular fa-clock text-xl"></i><span>이용 관리</span></button>
+        <button class="bottom-nav-item active"><i class="fa-solid fa-users text-xl"></i><span>친구</span></button>
+                   <button class="bottom-nav-item">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="mb-0.5">
+                    <path d="M7.86 2H16.14L22 7.86V16.14L16.14 22H7.86L2 16.14V7.86L7.86 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                    <path d="M12 8V12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                    <path d="M12 16H12.01" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                </svg>
+                <span>신고</span>
+            </button>
+    </nav>
+
+</div>
+</body>
+</html>

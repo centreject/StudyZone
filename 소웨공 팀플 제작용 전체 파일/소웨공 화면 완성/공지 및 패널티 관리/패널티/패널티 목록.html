@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>스터디존 관리자 - 사용자 패널티 현황 (Timelapse Ready)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* =========================================
+           [원본 스타일 유지]
+           ========================================= */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard", sans-serif;
+            background-color: #2b2b2b; 
+            height: 100vh; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            margin: 0;
+        }
+        .app-container {
+            width: 402px; 
+            height: 874px; 
+            background-color: #F8F9FA; 
+            display: flex; 
+            flex-direction: column;
+            position: relative; 
+            box-shadow: 0 0 50px rgba(0,0,0,0.5); 
+            border-radius: 30px; 
+            overflow: hidden;
+        }
+        .bottom-nav-item {
+            color: #545454; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center;
+            gap: 6px; 
+            font-size: 11px; 
+            height: 100%; 
+            width: 25%; 
+            cursor: pointer;
+        }
+        .bottom-nav-item.active { 
+            color: #007BFF; 
+            font-weight: 600; 
+        }
+
+        /* 팝업 메뉴 스타일 */
+        .popup-menu {
+            position: absolute;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0px 4px 10px rgba(0,0,0,0.15);
+            width: 130px;
+            padding: 8px 0;
+            z-index: 1000;
+            font-size: 14px;
+            display: none; /* JS에 의해 제어됨 */
+        }
+        .popup-menu-item {
+            padding: 10px 16px;
+            cursor: pointer;
+            color: #333;
+        }
+        .popup-menu-item:hover {
+            background: #F2F3F5;
+        }
+        .popup-danger {
+            color: #FF3B30 !important;
+        }
+
+        /* ==================================================================================
+           [타임랩스 제어용 CSS 블록]
+           * 진화(Creation) 영상 촬영 시:
+             1. 아래 Step 1 ~ 7의 주석을 모두 해제(활성화)하여 초기화 상태로 만듭니다.
+             2. 녹화를 켜고, Step 1부터 순서대로 다시 주석 처리(비활성화)하며 디자인을 살려냅니다.
+           ================================================================================== */
+
+        /* [Step 1: 뼈대] - 레이아웃 강제 초기화 (모든 요소를 세로 블록으로 나열) */
+        /*
+        .app-container *, .app-container {
+            display: block !important;
+            position: static !important; 
+            flex: none !important;
+            grid: none !important;
+            width: auto !important;
+            height: auto !important;
+            min-width: auto !important;
+            max-width: none !important;
+            margin: 5px !important;
+            padding: 5px !important;
+            border: 1px solid #ccc !important;
+            transform: none !important;
+            top: auto !important; left: auto !important; right: auto !important; bottom: auto !important;
+            overflow: visible !important;
+            z-index: auto !important;
+        }
+        */
+
+        /* [Step 2: 배치/레이아웃 와이어프레임] - 장식 제거 및 단순 박스화 */
+        /*
+        .app-container *, .app-container {
+            border-radius: 0 !important;
+            box-shadow: none !important;
+            background-image: none !important;
+            outline: 1px solid #eee !important;
+            box-sizing: border-box !important;
+        }
+        */
+
+        /* [Step 3: 타이포그래피 초기화] - 폰트 계층 구조 파괴 */
+        /*
+        .app-container *, .app-container {
+            font-family: 'Courier New', monospace !important;
+            font-size: 14px !important;
+            font-weight: 400 !important;
+            line-height: 1.2 !important;
+            letter-spacing: 0 !important;
+            text-align: left !important;
+        }
+        */
+
+        /* [Step 4: 색상 제거] - 흑백 모드 강제 (Tailwind 색상 무력화) */
+        /*
+        .app-container *, .app-container {
+            background-color: #ffffff !important;
+            color: #000000 !important;
+            border-color: #000000 !important;
+            accent-color: black !important;
+        }
+        */
+
+        /* [Step 5: 형태/깊이감 제거] - 완전한 평면 디자인 (Flat) */
+        /*
+        .app-container *, .app-container {
+            filter: none !important;
+            backdrop-filter: none !important;
+            box-shadow: none !important;
+            text-shadow: none !important;
+            border-radius: 0 !important;
+            border: 1px solid #000 !important; 
+        }
+        */
+
+        /* [Step 6: 아이콘/에셋 숨김] - 텍스트 외 요소 제거 */
+        /*
+        .app-container i, 
+        .app-container svg, 
+        .app-container img,
+        .app-container .fa-solid, 
+        .app-container .fa-regular {
+            visibility: hidden !important;
+            width: 0 !important;
+            height: 0 !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            border: none !important;
+        }
+        */
+
+        /* [Step 7: 인터랙션/애니메이션 제거] - 정적 상태 고정 */
+        /*
+        .app-container *, .app-container {
+            transition: none !important;
+            animation: none !important;
+            cursor: default !important;
+        }
+        .app-container *:hover {
+            background-color: #ffffff !important;
+            color: #000000 !important;
+            opacity: 1 !important;
+        }
+        */
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+
+    <header class="h-[60px] px-5 flex items-center justify-between bg-white border-b border-gray-100">
+        <h1 class="text-lg font-bold text-[#007BFF]">스터디존 - 관리자</h1>
+        <div class="flex items-center gap-4">
+            <button class="text-gray-500"><i class="fa-regular fa-bell text-xl"></i></button>
+            <button class="text-gray-500"><i class="fa-solid fa-bars text-xl"></i></button>
+        </div>
+    </header>
+
+    <div class="h-[50px] px-4 flex items-center gap-3 bg-[#F8F9FA]">
+        <button class="text-gray-600"><i class="fa-solid fa-arrow-left text-lg"></i></button>
+        <span class="text-lg font-medium text-[#333]">사용자 패널티 현황</span>
+    </div>
+
+    <div class="px-5 mt-3">
+        <div class="bg-white border border-gray-200 rounded-full h-11 px-4 flex items-center gap-3 shadow-sm">
+            <i class="fa-solid fa-magnifying-glass text-gray-400"></i>
+            <input class="flex-1 text-sm bg-transparent focus:outline-none text-gray-600"
+                placeholder="이름 혹은 학번 검색" />
+        </div>
+    </div>
+
+    <main class="flex-1 mt-2 overflow-y-auto relative" id="listArea">
+
+        <div class="user-row px-5 py-5 flex justify-between items-center border-b border-gray-200 relative">
+            <div>
+                <p class="text-[17px] font-semibold text-[#333]">홍길동</p>
+                <p class="text-[13px] text-[#999] mt-1">20121345</p>
+            </div>
+            <button class="text-gray-400 ellipsis-btn"><i class="fa-solid fa-ellipsis-vertical text-lg"></i></button>
+        </div>
+
+        <div class="user-row px-5 py-5 flex justify-between items-center border-b border-gray-200 relative">
+            <div>
+                <p class="text-[17px] font-semibold text-[#333]">홍길동</p>
+                <p class="text-[13px] text-[#999] mt-1">20121345</p>
+            </div>
+            <button class="text-gray-400 ellipsis-btn"><i class="fa-solid fa-ellipsis-vertical text-lg"></i></button>
+        </div>
+
+        <div class="user-row px-5 py-5 flex justify-between items-center border-b border-gray-200 relative">
+            <div>
+                <p class="text-[17px] font-semibold text-[#333]">홍길동</p>
+                <p class="text-[13px] text-[#999] mt-1">20121345</p>
+            </div>
+            <button class="text-gray-400 ellipsis-btn"><i class="fa-solid fa-ellipsis-vertical text-lg"></i></button>
+        </div>
+
+        <div class="user-row px-5 py-5 flex justify-between items-center border-b border-gray-200 relative">
+            <div>
+                <p class="text-[17px] font-semibold text-[#333]">홍길동</p>
+                <p class="text-[13px] text-[#999] mt-1">20121345</p>
+            </div>
+            <button class="text-gray-400 ellipsis-btn"><i class="fa-solid fa-ellipsis-vertical text-lg"></i></button>
+        </div>
+
+        <div class="user-row px-5 py-5 flex justify-between items-center border-b border-gray-200 relative">
+            <div>
+                <p class="text-[17px] font-semibold text-[#333]">홍길동</p>
+                <p class="text-[13px] text-[#999] mt-1">20121345</p>
+            </div>
+            <button class="text-gray-400 ellipsis-btn"><i class="fa-solid fa-ellipsis-vertical text-lg"></i></button>
+        </div>
+
+        <div id="popupMenu" class="popup-menu">
+            <div class="popup-menu-item">상세보기</div>
+            <div class="popup-menu-item popup-danger">목록에서 삭제</div>
+        </div>
+
+    </main>
+
+    <nav class="h-[85px] border-t border-gray-100 flex justify-between items-center px-2 bg-white pb-3 shrink-0 z-10">
+            <button class="bottom-nav-item"><i class="fa-solid fa-house text-xl"></i><span>홈</span></button>
+            <button class="bottom-nav-item"><i class="fa-regular fa-calendar text-xl"></i><span>좌석 관리</span></button>
+            <button class="bottom-nav-item"><i class="fa-solid fa-bullhorn text-xl"></i><span>공지사항 관리</span></button>
+            <button class="bottom-nav-item active">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="mb-0.5">
+                    <path d="M7.86 2H16.14L22 7.86V16.14L16.14 22H7.86L2 16.14V7.86L7.86 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                    <path d="M12 8V12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                    <path d="M12 16H12.01" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                </svg>
+                <span>신고 관리</span>
+            </button>
+        </nav>
+</div>
+
+<script>
+    const popup = document.getElementById("popupMenu");
+    let currentRow = null;
+
+    document.querySelectorAll(".ellipsis-btn").forEach(btn => {
+        btn.addEventListener("click", (e) => {
+            e.stopPropagation();
+
+            const row = btn.closest(".user-row");
+            currentRow = row;
+
+            const rect = btn.getBoundingClientRect();
+            const containerRect = document.querySelector(".app-container").getBoundingClientRect();
+
+            // popup 위치 계산 (버튼 좌표 기준)
+            const top = rect.top - containerRect.top - 140;
+            const left = rect.left - containerRect.left - 120;
+
+            popup.style.top = top + "px";
+            popup.style.left = left + "px";
+            popup.style.display = "block";
+        });
+    });
+
+    // 다른 곳 터치 시 팝업 닫기
+    document.addEventListener("click", () => {
+        popup.style.display = "none";
+    });
+</script>
+
+</body>
+</html>

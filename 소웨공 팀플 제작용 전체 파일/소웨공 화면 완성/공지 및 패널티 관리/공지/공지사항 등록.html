@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>스터디존 관리자 - 공지 등록</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard", sans-serif;
+            background-color: #2b2b2b; height: 100vh; display: flex; align-items: center; justify-content: center; margin: 0;
+        }
+        .app-container {
+            width: 402px; height: 874px; background-color: #F8F9FA; display: flex; flex-direction: column;
+            position: relative; box-shadow: 0 0 50px rgba(0,0,0,0.5); border-radius: 30px; overflow: hidden;
+        }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .bottom-nav-item {
+            color: #545454; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            gap: 6px; font-size: 11px; height: 100%; width: 25%; cursor: pointer;
+        }
+        .bottom-nav-item.active { color: #007BFF; font-weight: 600; }
+        
+        /* 입력 필드 placeholder 스타일 */
+        ::placeholder { color: #CCCCCC; opacity: 1; }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <header class="h-[60px] px-5 flex items-center justify-between bg-white border-b border-gray-100 shrink-0">
+            <h1 class="text-lg font-bold text-[#007BFF]">스터디존 - 관리자</h1>
+            <div class="flex items-center gap-4">
+                <button class="text-gray-500"><i class="fa-regular fa-bell text-xl"></i></button>
+                <button class="text-gray-500"><i class="fa-solid fa-bars text-xl"></i></button>
+            </div>
+        </header>
+
+        <div class="h-[50px] px-4 flex items-center gap-3 bg-[#F8F9FA] shrink-0">
+            <button class="text-gray-600"><i class="fa-solid fa-arrow-left text-lg"></i></button>
+            <span class="text-lg font-medium text-[#333]">공지사항 등록</span>
+        </div>
+
+        <main class="flex-1 flex flex-col p-5 bg-[#F8F9FA]">
+            <input type="text" placeholder="제목" 
+                class="w-full text-2xl font-bold bg-transparent border-none outline-none placeholder-gray-300 mb-4 text-[#333]">
+            
+            <div class="w-[20px] h-[2px] bg-[#007BFF] mb-6"></div>
+
+            <textarea placeholder="텍스트를 입력해주세요" 
+                class="flex-1 w-full bg-transparent border-none outline-none resize-none text-[15px] min-h-[200px] leading-relaxed placeholder-gray-300 text-[#333]"></textarea>
+
+            <div class="flex items-center justify-between mt-4 pt-4 border-t border-gray-200">
+                <div class="flex gap-4">
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" checked class="w-4 h-4 accent-[#007BFF]">
+                        <span class="text-xs font-medium text-[#333]">공개</span>
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" class="w-4 h-4 accent-[#007BFF]">
+                        <span class="text-xs font-medium text-[#333]">비공개</span>
+                    </label>
+                </div>
+                
+                <button class="bg-[#F0F0F0] text-gray-400 px-5 py-2 rounded-full text-xs font-bold hover:bg-[#007BFF] hover:text-white transition-colors">
+                    등록
+                </button>
+            </div>
+        </main>
+
+        <div class="absolute inset-0 bg-black/30 z-50 flex items-center justify-center">
+            <div class="bg-white w-[280px] rounded-xl overflow-hidden shadow-2xl animate-[fadeIn_0.2s_ease-out]">
+                <div class="p-6 text-center">
+                    <h3 class="text-[15px] font-bold text-[#333]">공지를 등록하시겠습니까?</h3>
+                </div>
+                <div class="flex border-t border-gray-200">
+                    <button class="flex-1 py-3.5 text-[15px] text-[#007BFF] font-medium border-r border-gray-200 hover:bg-gray-50">등록</button>
+                    <button class="flex-1 py-3.5 text-[15px] text-[#545454] font-medium hover:bg-gray-50">취소</button>
+                </div>
+            </div>
+        </div>
+
+                <nav class="h-[85px] border-t border-gray-100 flex justify-between items-center px-2 bg-white pb-3 shrink-0 z-10">
+            <button class="bottom-nav-item"><i class="fa-solid fa-house text-xl"></i><span>홈</span></button>
+            <button class="bottom-nav-item"><i class="fa-regular fa-calendar text-xl"></i><span>좌석 관리</span></button>
+            <button class="bottom-nav-item active"><i class="fa-solid fa-bullhorn text-xl"></i><span>공지사항 관리</span></button>
+            <button class="bottom-nav-item">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="mb-0.5">
+                    <path d="M7.86 2H16.14L22 7.86V16.14L16.14 22H7.86L2 16.14V7.86L7.86 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                    <path d="M12 8V12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                    <path d="M12 16H12.01" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                </svg>
+                <span>신고 관리</span>
+            </button>
+        </nav>
+    </div>
+</body>
+</html>
